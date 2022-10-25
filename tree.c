@@ -31,6 +31,9 @@ void createFile_names(FILE* dico){
                 }
                 fputc('\n', names);
             }
+            else{
+                fgets(ligne, 1000, dico);
+            }
         }
     }
     else
