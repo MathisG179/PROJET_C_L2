@@ -5,9 +5,6 @@
 
 int main() {
     FILE* f;
-    createFile_adverbs(f);
-    createFile_names(f);
-    createFile_verbs(f);
-    createFile_adjectives(f);
+    createFiles(f);
     return 0;
 }

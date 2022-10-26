@@ -23,9 +23,6 @@ typedef struct s_tree
     p_node root;
 } t_tree, *p_tree;
 
-void createFile_names(FILE* dico);
-void createFile_verbs(FILE* dico);
-void createFile_adverbs(FILE* dico);
-void createFile_adjectives(FILE* dico);
+void createFiles(FILE* dico);
 
 #endif //PROJET_C_L2_TREE_H

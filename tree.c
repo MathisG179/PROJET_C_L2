@@ -5,11 +5,15 @@ t_tree createTree_Nom(FILE* dico){
 
 }
 
-void createFile_names(FILE* dico){
+void createFiles(FILE* dico){
     dico = fopen("dictionnaire.txt", "r");
     FILE* names = fopen("names.txt", "w+");
+    FILE* verbs = fopen("verbs.txt", "w+");
+    FILE* adverbs = fopen("adverbs.txt", "w+");
+    FILE* adjectives = fopen("adjectives.txt", "w+");
     char ligne[1000];
     char caractereActuel;
+    char a, b;
     if (dico != NULL && names != NULL) {
         while(fgetc(dico) != EOF) {
             fseek(dico,-1, SEEK_CUR);
@@ -21,7 +25,8 @@ void createFile_names(FILE* dico){
                     //printf("%c", caractereActuel); // On l'affiche
                 } while (caractereActuel != '\t');
             }
-            if (fgetc(dico) == 'N') {
+            a = fgetc(dico);
+            if (a == 'N') {
                 fseek(dico, pos, SEEK_SET);
                 fgets(ligne, 1000, dico);
                 int i = 0;
@@ -30,37 +35,7 @@ void createFile_names(FILE* dico){
                     i++;
                 }
                 fputc('\n', names);
-            }
-            else{
-                fgets(ligne, 1000, dico);
-            }
-        }
-        fclose(dico);
-        fclose(names);
-    }
-    else
-    {
-        printf("Impossible d'ouvrir le dico dictionnaire.txt");
-    }
-}
-
-void createFile_verbs(FILE* dico){
-    dico = fopen("dictionnaire.txt", "r");
-    FILE* verbs = fopen("verbs.txt", "w+");
-    char ligne[1000];
-    char caractereActuel;
-    if (dico != NULL && verbs != NULL) {
-        while(fgetc(dico) != EOF) {
-            fseek(dico,-1, SEEK_CUR);
-            // Boucle de lecture des caractères un à un
-            int pos = ftell(dico);
-            for (int i = 0; i < 2; ++i) {
-                do {
-                    caractereActuel = fgetc(dico); // On lit le caractère
-                    //printf("%c", caractereActuel); // On l'affiche
-                } while (caractereActuel != '\t');
-            }
-            if (fgetc(dico) == 'V') {
+            }else if (a == 'V') {
                 fseek(dico, pos, SEEK_SET);
                 fgets(ligne, 1000, dico);
                 int i = 0;
@@ -69,39 +44,10 @@ void createFile_verbs(FILE* dico){
                     i++;
                 }
                 fputc('\n', verbs);
-            }
-            else{
-                fgets(ligne, 1000, dico);
-            }
-        }
-        fclose(dico);
-        fclose(verbs);
-    }
-    else
-    {
-        printf("Impossible d'ouvrir le dico dictionnaire.txt");
-    }
-}
-
-void createFile_adverbs(FILE* dico){
-    dico = fopen("dictionnaire.txt", "r");
-    FILE* adverbs = fopen("adverbs.txt", "w+");
-    char ligne[1000];
-    char caractereActuel;
-    if (dico != NULL && adverbs != NULL) {
-        while(fgetc(dico) != EOF) {
-            fseek(dico,-1, SEEK_CUR);
-            // Boucle de lecture des caractères un à un
-            int pos = ftell(dico);
-            for (int i = 0; i < 2; ++i) {
-                do {
-                    caractereActuel = fgetc(dico); // On lit le caractère
-                    //printf("%c", caractereActuel); // On l'affiche
-                } while (caractereActuel != '\t');
-            }
-            if (fgetc(dico) == 'A') {
+            }else if (a == 'A') {
                 if (fgetc(dico) == 'd') {
-                    if (fgetc(dico) == 'v') {
+                    b = fgetc(dico);
+                    if (b == 'v') {
                         fseek(dico, pos, SEEK_SET);
                         fgets(ligne, 1000, dico);
                         int i = 0;
@@ -110,47 +56,7 @@ void createFile_adverbs(FILE* dico){
                             i++;
                         }
                         fputc('\n', adverbs);
-                    }
-                    else{
-                        fgets(ligne, 1000, dico);
-                    }
-                }
-                else{
-                    fgets(ligne, 1000, dico);
-                }
-            }
-            else{
-                fgets(ligne, 1000, dico);
-            }
-        }
-        fclose(dico);
-        fclose(adverbs);
-    }
-    else
-    {
-        printf("Impossible d'ouvrir le dico dictionnaire.txt");
-    }
-}
-
-void createFile_adjectives(FILE* dico){
-    dico = fopen("dictionnaire.txt", "r");
-    FILE* adjectives = fopen("adjectives.txt", "w+");
-    char ligne[1000];
-    char caractereActuel;
-    if (dico != NULL && adjectives != NULL) {
-        while(fgetc(dico) != EOF) {
-            fseek(dico,-1, SEEK_CUR);
-            // Boucle de lecture des caractères un à un
-            int pos = ftell(dico);
-            for (int i = 0; i < 2; ++i) {
-                do {
-                    caractereActuel = fgetc(dico); // On lit le caractère
-                    //printf("%c", caractereActuel); // On l'affiche
-                } while (caractereActuel != '\t');
-            }
-            if (fgetc(dico) == 'A') {
-                if (fgetc(dico) == 'd') {
-                    if (fgetc(dico) == 'j') {
+                    }else if (b == 'j') {
                         fseek(dico, pos, SEEK_SET);
                         fgets(ligne, 1000, dico);
                         int i = 0;
@@ -173,7 +79,7 @@ void createFile_adjectives(FILE* dico){
             }
         }
         fclose(dico);
-        fclose(adjectives);
+        fclose(names);
     }
     else
     {
