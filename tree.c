@@ -1,8 +1,97 @@
 #include "tree.h"
 
+t_tree createTree(char a){
+    t_tree nouv;
+    nouv.root = createNode(a);
+    return nouv;
+}
 
-t_tree createTree_Nom(FILE* dico){
+void printTabs(int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        putchar('\t');
+    }
+}
 
+void printTreeRecursive(p_node pn, int level)
+{
+    while (pn != NULL)
+    {
+        printTabs(level);
+        printf("Node: %c\n", pn->lettre);
+
+        if (pn->kids != NULL)
+        {
+            printTabs(level);
+            printf("Children:\n");
+            printTreeRecursive(pn->kids, level + 1);
+        }
+
+        pn = pn->kids;
+    }
+}
+
+void printTree(p_node pn)
+{
+    printTreeRecursive(pn, 0);
+}
+
+
+p_node storeInTree(p_node pn, char c) {
+    if(pn== NULL){
+        pn = createNode(c);
+    }else if(pn->lettre == '0'){
+        storeInTree(pn->kids,c);
+    }else if(pn->lettre == c){
+        storeInTree(pn->kids,c);
+    }else{
+        storeInTree(pn->siblings, c);
+    }
+    return pn;
+}
+
+
+t_tree createTree_Names(FILE* names){
+    t_tree t = createTree('0');
+    p_node pn = t.root;
+    names = fopen("names.txt", "r");
+    char name[1000];
+    char useless[1000];
+    char caractereActuel;
+    if(names != NULL) {
+        for (int c = 0; c < 5; ++c) {   //TEMPORAIRE !!!! (sera remplacé par le while ci-dessous)
+
+
+        //while (fgetc(names) != EOF) {
+            fseek(names, -1, SEEK_CUR);
+            // Boucle de lecture des caractères un à un
+            int pos = ftell(names);
+            do {
+                caractereActuel = fgetc(names); // On lit le caractère
+            } while (caractereActuel != '\t');
+            int i = 0;
+            do {
+                caractereActuel = fgetc(names);
+                name[i] = caractereActuel;
+                //printf("%c",name[i]);
+                i++;
+            } while (name[i-1] != '\t');
+            //name[i] = '\0';
+            i = 0;
+            int found = 0;
+            while(name[i] != '\t'){
+                storeInTree(pn,name[i]);
+                i++;
+            }
+            fgets(useless, 1000, names);
+        }
+        return t;
+    }
+    else{
+        printf("Impossible d'ouvrir le dico dictionnaire.txt");
+        return t;
+    }
 }
 
 void createFiles(FILE* dico){
@@ -14,7 +103,7 @@ void createFiles(FILE* dico){
     char ligne[1000];
     char caractereActuel;
     char a, b;
-    if (dico != NULL && names != NULL) {
+    if (dico != NULL && names != NULL && verbs != NULL && adverbs != NULL && adjectives != NULL) {
         while(fgetc(dico) != EOF) {
             fseek(dico,-1, SEEK_CUR);
             // Boucle de lecture des caractères un à un
@@ -80,6 +169,9 @@ void createFiles(FILE* dico){
         }
         fclose(dico);
         fclose(names);
+        fclose(verbs);
+        fclose(adverbs);
+        fclose(adjectives);
     }
     else
     {

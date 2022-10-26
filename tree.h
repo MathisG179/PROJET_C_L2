@@ -3,20 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-typedef struct s_flechie{
-    int n;                      //n : nb de formes flechies
-    char** flechies;
-}t_flechie, *p_flechie;
-
-typedef  struct s_node
-{
-    char lettre;
-    p_flechie toto;
-    int numKids;
-    struct t **kids;
-}t_node, *p_node;
-
+#include "node.h"
 
 typedef struct s_tree
 {
@@ -24,5 +11,10 @@ typedef struct s_tree
 } t_tree, *p_tree;
 
 void createFiles(FILE* dico);
+t_tree createTree_Names(FILE* names);
+void printTree(p_node pn);
+void printTreeRecursive(p_node pn, int level);
+void printTabs(int count);
+
 
 #endif //PROJET_C_L2_TREE_H
