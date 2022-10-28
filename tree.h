@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "node.h"
 
 typedef struct s_tree
@@ -16,5 +17,7 @@ void printTree(p_node pn);
 void printTreeRecursive(p_node pn, int level);
 void printTabs(int count);
 t_tree createTree(char a);
+t_tree createTree_any(t_tree, char*);
+
 
 #endif //PROJET_C_L2_TREE_H
