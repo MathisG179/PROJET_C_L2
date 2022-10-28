@@ -11,10 +11,10 @@ typedef struct s_tree
 } t_tree, *p_tree;
 
 void createFiles(FILE* dico);
-t_tree createTree_Names(FILE* names);
+t_tree createTree_Names(t_tree, FILE* names);
 void printTree(p_node pn);
 void printTreeRecursive(p_node pn, int level);
 void printTabs(int count);
-
+t_tree createTree(char a);
 
 #endif //PROJET_C_L2_TREE_H

@@ -8,7 +8,7 @@ p_node createNode(char a)
     nouv = (p_node)malloc(sizeof(t_node));
     nouv->lettre = a;
     nouv->toto = (p_flechie)malloc(sizeof (t_flechie));
-    nouv->kids = NULL;
+    nouv->kid = NULL;
     nouv->siblings = NULL;
 
     return nouv;
