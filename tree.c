@@ -6,6 +6,118 @@ t_tree createTree(char a){
     return nouv;
 }
 
+void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosition){
+    FILE* file;
+    int Genre;          //0.5 = Mas | 3.5 = Fem | 6.5 = InvGEN
+    int Nombre;         //0.5 = SG | 1.5 = PL | 2.5 = InvPL
+                        //Genre + Nombre = position du tableau(Genre en ligne et Nombre en colone)
+    char ActualChar;
+    int i = 0;
+    char name[1000];
+
+    if(strcmp(filename, "names") == 0){
+        file = fopen("names.txt", "r");
+        fseek(file, ActualPosition, SEEK_SET);
+        if(pn->toto == NULL){
+
+            // initialisation d'un tableau de char*
+
+        }
+
+        do {
+            ActualChar = fgetc(file); // On lit le caractère
+        } while (ActualChar != ':');
+
+        ActualChar = fgetc(file);
+        if(ActualChar == 'M'){
+            Genre = 0,5;
+        }else if(ActualChar == 'F'){
+            Genre = 3,5;
+        }else if(ActualChar == 'I'){
+            Genre = 6,5;
+        }
+
+        do {
+            ActualChar = fgetc(file); // On lit le caractère
+        } while (ActualChar != '+');
+
+        ActualChar = fgetc(file);
+        if(ActualChar == 'S'){
+            Nombre = 0,5;
+        }else if(ActualChar == 'P'){
+            Nombre = 1,5;
+        }else if(ActualChar == 'I'){
+            Nombre = 2,5;
+        }
+
+        fseek(file, StartPosition, SEEK_SET);
+
+        do {
+            ActualChar = fgetc(file);
+            name[i] = ActualChar;
+            //printf("%c",name[i]);
+            i++;
+        } while (name[i-1] != '\t');
+
+        while(name[i] != '\t'){
+            pn->toto[Genre + Nombre][i] = name[i];
+        }
+
+    }
+    else if(strcmp(filename, "adjectives") == 0){
+        file = fopen("adjectives.txt", "r");
+        fseek(file, ActualPosition, SEEK_SET);
+        if(pn->toto == NULL){
+
+            // initialisation d'un tableau de char*
+
+        }
+        do {
+            ActualChar = fgetc(file); // On lit le caractère
+        } while (ActualChar != ':');
+
+        ActualChar = fgetc(file);
+        if(ActualChar == 'M'){
+            Genre = 0,5;
+        }else if(ActualChar == 'F'){
+            Genre = 3,5;
+        }else if(ActualChar == 'I'){
+            Genre = 6,5;
+        }
+
+        do {
+            ActualChar = fgetc(file); // On lit le caractère
+        } while (ActualChar != '+');
+
+        ActualChar = fgetc(file);
+        if(ActualChar == 'S'){
+            Nombre = 0,5;
+        }else if(ActualChar == 'P'){
+            Nombre = 1,5;
+        }else if(ActualChar == 'I'){
+            Nombre = 2,5;
+        }
+
+        do {
+            ActualChar = fgetc(file);
+            name[i] = ActualChar;
+            //printf("%c",name[i]);
+            i++;
+        } while (name[i-1] != '\t');
+
+        while(name[i] != '\t'){
+            pn->toto[Genre + Nombre][i] = name[i];
+        }
+
+    }
+    else if(strcmp(filename, "verbs") == 0){
+
+    }
+    else if(strcmp(filename, "adverbs") == 0){
+
+    }
+    fclose(file);
+}
 
 t_tree createTree_any(t_tree t, char* filename){
     p_node pn = t.root;
@@ -19,9 +131,10 @@ t_tree createTree_any(t_tree t, char* filename){
     }else if(strcmp(filename, "adjectives") == 0){
         file = fopen("adjectives.txt", "r");
     }
+
     char name[1000];
     char useless[1000];
-    char caractereActuel;
+    char ActualChar;
     int kid;
     int sib;
     if(file != NULL) {
@@ -29,19 +142,20 @@ t_tree createTree_any(t_tree t, char* filename){
 
             fseek(file, -1, SEEK_CUR);
             // Boucle de lecture des caractères un à un
-            int pos = ftell(file);
             do {
-                caractereActuel = fgetc(file); // On lit le caractère
-            } while (caractereActuel != '\t');
+                ActualChar = fgetc(file); // On lit le caractère
+            } while (ActualChar != '\t');
             int i = 0;
+            int StartPosition = ftell(file);
             do {
-                caractereActuel = fgetc(file);
-                name[i] = caractereActuel;
+                ActualChar = fgetc(file);
+                name[i] = ActualChar;
                 //printf("%c",name[i]);
                 i++;
             } while (name[i-1] != '\t');
             //printf("\n");
             i = 0;
+
             while(name[i] != '\t'){
                 if(pn->lettre == '0'){
                     pn->kid = createNode(name[i]);
@@ -70,6 +184,22 @@ t_tree createTree_any(t_tree t, char* filename){
                     }
                 }
             }
+            int ActualPosition = ftell(file);
+            fclose(file);
+
+            insertFlechies(pn, filename, StartPosition, ActualPosition);
+
+            if(strcmp(filename, "names") == 0){
+                file = fopen("names.txt", "r");
+            }else if(strcmp(filename, "verbs") == 0){
+                file = fopen("verbs.txt", "r");
+            }else if(strcmp(filename, "adverbs") == 0){
+                file = fopen("adverbs.txt", "r");
+            }else if(strcmp(filename, "adjectives") == 0){
+                file = fopen("adjectives.txt", "r");
+            }
+
+            fseek(file, ActualPosition, SEEK_SET);
             pn = t.root;
             pn = pn->kid;
             fgets(useless, 1000, file);
@@ -82,78 +212,6 @@ t_tree createTree_any(t_tree t, char* filename){
     }
 }
 
-
-
-
-
-/*
-t_tree createTree_Names(t_tree t, FILE* names){
-    p_node pn = t.root;
-    names = fopen("names.txt", "r");
-    char name[1000];
-    char useless[1000];
-    char caractereActuel;
-    int kid;
-    int sib;
-    if(names != NULL) {
-        while (fgetc(names) != EOF) {
-
-            fseek(names, -1, SEEK_CUR);
-            // Boucle de lecture des caractères un à un
-            int pos = ftell(names);
-            do {
-                caractereActuel = fgetc(names); // On lit le caractère
-            } while (caractereActuel != '\t');
-            int i = 0;
-            do {
-                caractereActuel = fgetc(names);
-                name[i] = caractereActuel;
-                printf("%c",name[i]);
-                i++;
-            } while (name[i-1] != '\t');
-            printf("\n");
-            i = 0;
-            while(name[i] != '\t'){
-                if(pn->lettre == '0'){
-                    pn->kid = createNode(name[i]);
-                    pn = pn->kid;
-                    i++;
-                }else {
-                    while (pn->lettre != name[i]) {
-                        if (pn->siblings != NULL) {
-                            pn = pn->siblings;
-                        } else {
-                            if(name[i] != '\t'){
-                                pn->siblings = createNode(name[i]);
-                                sib = 1;
-                                pn = pn->siblings;
-                            }
-                        }
-                    }
-                    if (pn->kid != NULL) {
-                        pn = pn->kid;
-                        i++;
-                    } else {
-                        i++;
-                        if(name[i] != '\t'){
-                            pn->kid = createNode(name[i]);
-                            pn = pn->kid;
-                        }
-                    }
-                }
-            }
-            pn = t.root;
-            pn = pn->kid;
-            fgets(useless, 1000, names);
-        }
-        return t;
-    }
-    else{
-        printf("Impossible d'ouvrir le dico names.txt");
-        return t;
-    }
-}*/
-
 void createFiles(FILE* dico){
     dico = fopen("dictionnaire.txt", "r");
     FILE* names = fopen("names.txt", "w+");
@@ -161,7 +219,7 @@ void createFiles(FILE* dico){
     FILE* adverbs = fopen("adverbs.txt", "w+");
     FILE* adjectives = fopen("adjectives.txt", "w+");
     char ligne[1000];
-    char caractereActuel;
+    char ActualChar;
     char a, b;
     if (dico != NULL && names != NULL && verbs != NULL && adverbs != NULL && adjectives != NULL) {
         while(fgetc(dico) != EOF) {
@@ -170,8 +228,8 @@ void createFiles(FILE* dico){
             int pos = ftell(dico);
             for (int i = 0; i < 2; ++i) {
                 do {
-                    caractereActuel = fgetc(dico); // On lit le caractère
-                } while (caractereActuel != '\t');
+                    ActualChar = fgetc(dico); // On lit le caractère
+                } while (ActualChar != '\t');
             }
             a = fgetc(dico);
             if (a == 'N') {
