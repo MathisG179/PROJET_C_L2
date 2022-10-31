@@ -8,9 +8,15 @@ t_tree createTree(char a){
 
 void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosition){
     FILE* file;
-    int Genre;          //0.5 = Mas | 3.5 = Fem | 6.5 = InvGEN
-    int Nombre;         //0.5 = SG | 1.5 = PL | 2.5 = InvPL
-                        //Genre + Nombre = position du tableau(Genre en ligne et Nombre en colone)
+    float Genre;                    //0.5 = Mas | 3.5 = Fem | 6.5 = InvGEN
+    float Nombre;                   //0.5 = SG | 1.5 = PL | 2.5 = InvPL
+    const float Mas = 0.5;          //Genre + Nombre = position du tableau(Genre en ligne et Nombre en colone)
+    const float Fem = 3.5;
+    const float InvGEN = 6.5;
+    const float SG = 0.5;
+    const float PL = 1.5;
+    const float InvPL = 2.5;
+
     char ActualChar;
     int i = 0;
     char name[1000];
@@ -20,7 +26,7 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
         fseek(file, ActualPosition, SEEK_SET);
         if(pn->toto == NULL){
 
-            // initialisation d'un tableau de char*
+            // initialisation d'un tableau de 9 char*
 
         }
 
@@ -30,11 +36,11 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
 
         ActualChar = fgetc(file);
         if(ActualChar == 'M'){
-            Genre = 0,5;
+            Genre = Mas;
         }else if(ActualChar == 'F'){
-            Genre = 3,5;
+            Genre = Fem;
         }else if(ActualChar == 'I'){
-            Genre = 6,5;
+            Genre = InvGEN;
         }
 
         do {
@@ -43,11 +49,11 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
 
         ActualChar = fgetc(file);
         if(ActualChar == 'S'){
-            Nombre = 0,5;
+            Nombre = SG;
         }else if(ActualChar == 'P'){
-            Nombre = 1,5;
+            Nombre = PL;
         }else if(ActualChar == 'I'){
-            Nombre = 2,5;
+            Nombre = InvPL;
         }
 
         fseek(file, StartPosition, SEEK_SET);
@@ -135,8 +141,7 @@ t_tree createTree_any(t_tree t, char* filename){
     char name[1000];
     char useless[1000];
     char ActualChar;
-    int kid;
-    int sib;
+
     if(file != NULL) {
         while (fgetc(file) != EOF) {
 
@@ -167,7 +172,7 @@ t_tree createTree_any(t_tree t, char* filename){
                         } else {
                             if(name[i] != '\t'){
                                 pn->siblings = createNode(name[i]);
-                                sib = 1;
+                                //sib = 1;
                                 pn = pn->siblings;
                             }
                         }
@@ -184,6 +189,7 @@ t_tree createTree_any(t_tree t, char* filename){
                     }
                 }
             }
+
             int ActualPosition = ftell(file);
             fclose(file);
 
@@ -200,6 +206,8 @@ t_tree createTree_any(t_tree t, char* filename){
             }
 
             fseek(file, ActualPosition, SEEK_SET);
+
+
             pn = t.root;
             pn = pn->kid;
             fgets(useless, 1000, file);
@@ -295,3 +303,4 @@ void createFiles(FILE* dico){
         printf("Impossible d'ouvrir le dico dictionnaire.txt");
     }
 }
+

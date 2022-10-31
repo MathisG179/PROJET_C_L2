@@ -15,6 +15,7 @@ typedef  struct s_node
 {
     char lettre;
     char** toto;
+    //p_flechie toto;
     struct s_node *kid;
     struct s_node *siblings;
 }t_node, *p_node;
