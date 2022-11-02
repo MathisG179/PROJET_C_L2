@@ -11,9 +11,9 @@ typedef struct s_tree
     p_node root;
 } t_tree, *p_tree;
 
-void createFiles(FILE* dico);
+void createFiles();
 t_tree createTree(char a);
 t_tree createTree_any(t_tree, char*);
-void insertFlechies(p_node, char, int, int);
+void insertFlechies(p_node, char*, int, int);
 
 #endif //PROJET_C_L2_TREE_H

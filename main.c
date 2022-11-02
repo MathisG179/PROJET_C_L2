@@ -6,9 +6,9 @@
 int main() {
     FILE* f;
     t_tree NOM = createTree('0');
-    createFiles(f);
+    createFiles();
     NOM = createTree_any(NOM, "names");
-
+/*
     t_tree VER = createTree('0');
     VER = createTree_any(VER, "verbs");
 
@@ -17,6 +17,7 @@ int main() {
 
     t_tree ADJ = createTree('0');
     ADJ = createTree_any(ADJ, "adjectives");
+    */
     int k = 1;
     //printTree(t.root);
     return 0;

@@ -9,7 +9,7 @@ typedef struct s_flechie{
     int n;                      //n : nb de formes flechies
     char** flechies;
 }t_flechie, *p_flechie;
-*/
+*/;
 
 typedef  struct s_node
 {

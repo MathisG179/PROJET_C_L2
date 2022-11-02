@@ -6,7 +6,7 @@ t_tree createTree(char a){
     return nouv;
 }
 
-void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosition){
+void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosition){
     FILE* file;
     float Genre;                    //0.5 = Mas | 3.5 = Fem | 6.5 = InvGEN
     float Nombre;                   //0.5 = SG | 1.5 = PL | 2.5 = InvPL
@@ -20,18 +20,31 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
     char ActualChar;
     int i = 0;
     char name[1000];
-
     if(strcmp(filename, "names") == 0){
         file = fopen("names.txt", "r");
         fseek(file, ActualPosition, SEEK_SET);
         if(pn->toto == NULL){
-
             // initialisation d'un tableau de 9 char*
+            pn->toto = (char**)malloc(9*sizeof(char*));
+            for (int j = 0; j < 9; ++j) {
+                pn->toto[j] = (char*)malloc(100*sizeof(char));
 
+            }
         }
 
         do {
             ActualChar = fgetc(file); // On lit le caractère
+            /*k++;
+            int d = ftell(file);
+            if(d > 600000){
+
+                printf("%c", ActualChar);
+            }
+            if(k>7){
+                printf("%d\n",k);
+
+                printf("%d\n", d);
+                break;*/
         } while (ActualChar != ':');
 
         ActualChar = fgetc(file);
@@ -41,11 +54,15 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
             Genre = Fem;
         }else if(ActualChar == 'I'){
             Genre = InvGEN;
+        }else {
+            int d = ftell(file);
+            printf("G%d\n", d);
         }
-
         do {
             ActualChar = fgetc(file); // On lit le caractère
         } while (ActualChar != '+');
+
+
 
         ActualChar = fgetc(file);
         if(ActualChar == 'S'){
@@ -54,6 +71,9 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
             Nombre = PL;
         }else if(ActualChar == 'I'){
             Nombre = InvPL;
+        }else {
+            int d = ftell(file);
+            printf("N%d\n", d);
         }
 
         fseek(file, StartPosition, SEEK_SET);
@@ -64,12 +84,14 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
             //printf("%c",name[i]);
             i++;
         } while (name[i-1] != '\t');
-
+        i = 0;
         while(name[i] != '\t'){
-            pn->toto[Genre + Nombre][i] = name[i];
+            pn->toto[(int)(Genre + Nombre-1)][i] = name[i];
+            //char b = pn->toto[(int)(Genre + Nombre)][i];
+            i++;
         }
 
-    }
+    }/*
     else if(strcmp(filename, "adjectives") == 0){
         file = fopen("adjectives.txt", "r");
         fseek(file, ActualPosition, SEEK_SET);
@@ -112,7 +134,7 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
         } while (name[i-1] != '\t');
 
         while(name[i] != '\t'){
-            pn->toto[Genre + Nombre][i] = name[i];
+            pn->toto[(int)(Genre + Nombre)][i] = name[i];
         }
 
     }
@@ -121,7 +143,7 @@ void insertFlechies(p_node pn, char filename, int StartPosition, int ActualPosit
     }
     else if(strcmp(filename, "adverbs") == 0){
 
-    }
+    }*/
     fclose(file);
 }
 
@@ -141,17 +163,19 @@ t_tree createTree_any(t_tree t, char* filename){
     char name[1000];
     char useless[1000];
     char ActualChar;
+    int e = 0;
 
     if(file != NULL) {
         while (fgetc(file) != EOF) {
 
             fseek(file, -1, SEEK_CUR);
+            int StartPosition = ftell(file);
             // Boucle de lecture des caractères un à un
             do {
                 ActualChar = fgetc(file); // On lit le caractère
             } while (ActualChar != '\t');
             int i = 0;
-            int StartPosition = ftell(file);
+
             do {
                 ActualChar = fgetc(file);
                 name[i] = ActualChar;
@@ -193,6 +217,8 @@ t_tree createTree_any(t_tree t, char* filename){
             int ActualPosition = ftell(file);
             fclose(file);
 
+            //printf("%d\n",e);
+            //e++;
             insertFlechies(pn, filename, StartPosition, ActualPosition);
 
             if(strcmp(filename, "names") == 0){
@@ -215,13 +241,13 @@ t_tree createTree_any(t_tree t, char* filename){
         return t;
     }
     else{
-        printf("Impossible d'ouvrir le dico %c.txt",filename);
+        printf("Impossible d'ouvrir le dico %c.txt",&filename);
         return t;
     }
 }
 
-void createFiles(FILE* dico){
-    dico = fopen("dictionnaire.txt", "r");
+void createFiles(){
+    FILE* dico = fopen("dictionnaire.txt", "r");
     FILE* names = fopen("names.txt", "w+");
     FILE* verbs = fopen("verbs.txt", "w+");
     FILE* adverbs = fopen("adverbs.txt", "w+");
