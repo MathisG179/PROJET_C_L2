@@ -6,6 +6,22 @@ t_tree createTree(char a){
     return nouv;
 }
 
+void displayNode(p_node pn, char* filename){
+    if(strcmp(filename, "names") == 0){
+
+        for (int j = 0; j < 9; ++j) {
+            int i = 0;
+            while (pn->toto[j][i] != 0){
+                printf("%c",pn->toto[j][i]);
+                i++;
+            }
+            if (pn->toto[j][0] != 0){
+                printf("\n");
+            }
+        }
+    }
+}
+
 void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosition){
     FILE* file;
     float Genre;                    //0.5 = Mas | 3.5 = Fem | 6.5 = InvGEN
@@ -27,9 +43,10 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             // initialisation d'un tableau de 9 char*
             pn->toto = (char**)malloc(9*sizeof(char*));
             for (int j = 0; j < 9; ++j) {
-                pn->toto[j] = (char*)malloc(100*sizeof(char));
-
+                //pn->toto[j] = (char*)malloc(100*sizeof(char));
+                pn->toto[j] = (char*)calloc(100,sizeof(char));
             }
+
         }
 
         do {
@@ -77,6 +94,11 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         }
 
         fseek(file, StartPosition, SEEK_SET);
+
+        if((int)(Genre+Nombre) == 9){
+            //displayNode(pn,filename);
+        }
+
 
         do {
             ActualChar = fgetc(file);
@@ -144,6 +166,11 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
     else if(strcmp(filename, "adverbs") == 0){
 
     }*/
+    if (Nombre == InvPL){
+        displayNode(pn,filename);
+        printf("\n");
+    }
+    //printf("%c",pn->toto[0][0]);
     fclose(file);
 }
 

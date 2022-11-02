@@ -15,5 +15,6 @@ void createFiles();
 t_tree createTree(char a);
 t_tree createTree_any(t_tree, char*);
 void insertFlechies(p_node, char*, int, int);
+void displayNode(p_node, char*);
 
 #endif //PROJET_C_L2_TREE_H

@@ -6,7 +6,7 @@
 int main() {
     FILE* f;
     t_tree NOM = createTree('0');
-    createFiles();
+    //createFiles();
     NOM = createTree_any(NOM, "names");
 /*
     t_tree VER = createTree('0');
