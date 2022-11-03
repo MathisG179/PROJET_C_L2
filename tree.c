@@ -1,5 +1,113 @@
 #include "tree.h"
 
+char * ChooseWord(t_tree t) {
+    p_node tmp;
+    int cpt = 0, random, i = 0, choice, stop;
+    char *word = (char *) malloc(50 * sizeof(char));
+    tmp = t.root->kid;
+    srand( time( NULL ) );
+    random = rand() % 26;
+
+    while (cpt < random ) {
+        tmp = tmp->siblings;
+        cpt++;
+    }
+
+    word[i] = tmp->lettre;
+    i++;
+    tmp = tmp->kid;
+    stop = 1;
+
+    while (stop != 0) {  //We will run while stop is different from 0
+        if (tmp->siblings == NULL) {  //If it has no sibling we go to the kid.
+            if (tmp ->kid != NULL){   // Verify if the kids are null or not, if yes, we are at the end of the word.
+                word[i] = tmp->lettre;
+                tmp = tmp->kid;
+            }
+            else {
+                word[i] = tmp->lettre;
+                stop = 0;
+            }
+        } else {   // if it has siblings, we will choose randomly one of them.
+            choice = rand() % 2;  //Choose randomly if we want to use siblings or not
+            if (choice == 0) {
+                if (tmp ->kid != NULL){
+                    word[i] = tmp->lettre;
+                    tmp = tmp->kid;
+                }
+                else {
+                    word[i] = tmp->lettre;
+                    stop = 0;
+                }
+
+            } else {
+                random = rand()% CountSiblings(t,tmp); //count the number of siblings
+                cpt = 0;
+                while (cpt <= random) {
+                    tmp = tmp->siblings;
+                    cpt++;
+                }
+                if( tmp->kid != NULL){
+                    word[i] = tmp->lettre;
+                    tmp = tmp->kid;
+                }
+                else {
+                    word[i] = tmp->lettre;
+                    stop = 0;
+                }
+
+            }
+        }
+        i++;
+    }
+    word[i + 1] = 0;
+    word = (char *) realloc(word, i * sizeof(char));;
+    return word;
+}
+
+int CountSiblings(t_tree t, p_node p){
+    int cpt = 0;
+    p_node tmp = p;
+    while (tmp->siblings != NULL){
+        tmp = tmp->siblings;
+        cpt ++;
+    }
+    return cpt;
+}
+
+void DisplayWord(char * word){
+    int i = 0;
+    while (word[i] != 0){
+        printf("%c", word[i]);
+        i++;
+    }
+}
+
+void recherche_mot(t_tree t,char* mot){   // parcourir l arbre au fur et a mesure / creer un stop dans le while et imbrique le if cpt = machin dansle while
+    //et mettre le stop a 0. cherchez dansles formes flechies de la node
+    p_node pn = t.root;
+    pn=pn->kid;
+    int i =0;
+    int cpt =0;
+    int length = strlen(mot);
+    while (pn->kid!=NULL) {
+        if (mot[i] == pn->lettre) {
+            pn = pn->kid;
+            cpt+=1;
+            i++;
+        }
+        else {
+            pn = pn->siblings;
+        }
+    }
+    if (cpt==length){
+        printf("mot trouvé");
+    }
+    else{
+        printf("mot non trouvé");
+    }
+}
+
 t_tree createTree(char a){
     t_tree nouv;
     nouv.root = createNode(a);
@@ -10,6 +118,19 @@ void displayNode(p_node pn, char* filename){
     if(strcmp(filename, "names") == 0){
 
         for (int j = 0; j < 9; ++j) {
+            DisplayWord(pn->toto[j]);/*
+            int i = 0;
+            while (pn->toto[j][i] != 0){
+                printf("%c",pn->toto[j][i]);
+                i++;
+            }*/
+            if (pn->toto[j][0] != 0){
+                printf("\n");
+            }
+        }
+    }
+    else if(strcmp(filename, "adjectives") == 0){
+        for (int j = 0; j < 10; ++j) {
             int i = 0;
             while (pn->toto[j][i] != 0){
                 printf("%c",pn->toto[j][i]);
@@ -24,14 +145,28 @@ void displayNode(p_node pn, char* filename){
 
 void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosition){
     FILE* file;
-    float Genre;                    //0.5 = Mas | 3.5 = Fem | 6.5 = InvGEN
-    float Nombre;                   //0.5 = SG | 1.5 = PL | 2.5 = InvPL
-    const float Mas = 0.5;          //Genre + Nombre = position du tableau(Genre en ligne et Nombre en colone)
-    const float Fem = 3.5;
+    int Card = 0;
+    float Genre = 0;                    //0.5 = Mas | 3.5 = Fem | 6.5 = InvGEN
+    float Nombre = 0;                   //0.5 = SG | 1.5 = PL | 2.5 = InvPL
+    const float Mas = 0.5;              //Genre + Nombre = position du tableau(Genre en ligne et Nombre en colone)
+    const float Fem = 3.5;              //La 10e case corespond aux Card
     const float InvGEN = 6.5;
     const float SG = 0.5;
     const float PL = 1.5;
     const float InvPL = 2.5;
+
+    int Inf = 0;
+    int Personne = 0;
+    int Temps = 0;
+    const int IPre = 1;
+    const int IImp = 2;                 //Personne + Temps = position du tableau(Personne en ligne et Temps en colone)
+    const int SPre = 3;
+    const int vSG = 0;
+    const int vPL = 9;
+    const int P1 = 0;
+    const int P2 = 3;
+    const int P3 = 6;
+
 
     char ActualChar;
     int i = 0;
@@ -75,6 +210,8 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             int d = ftell(file);
             printf("G%d\n", d);
         }
+
+
         do {
             ActualChar = fgetc(file); // On lit le caractère
         } while (ActualChar != '+');
@@ -95,9 +232,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
 
         fseek(file, StartPosition, SEEK_SET);
 
-        if((int)(Genre+Nombre) == 9){
-            //displayNode(pn,filename);
-        }
+
 
 
         do {
@@ -113,40 +248,68 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             i++;
         }
 
-    }/*
+    }
     else if(strcmp(filename, "adjectives") == 0){
         file = fopen("adjectives.txt", "r");
         fseek(file, ActualPosition, SEEK_SET);
         if(pn->toto == NULL){
-
-            // initialisation d'un tableau de char*
+            // initialisation d'un tableau de 10 char*
+            pn->toto = (char**)malloc(10*sizeof(char*));
+            for (int j = 0; j < 10; ++j) {
+                //pn->toto[j] = (char*)malloc(100*sizeof(char));
+                pn->toto[j] = (char*)calloc(100,sizeof(char));
+            }
 
         }
+        int k = 0;
         do {
             ActualChar = fgetc(file); // On lit le caractère
+            /*k++;
+            int d = ftell(file);
+            if(d > 300000){
+
+                printf("%c", ActualChar);
+            }
+            if(k>7) {
+                printf("%d\n", k);
+
+                printf("%d\n", d);
+                break;
+            }*/
         } while (ActualChar != ':');
 
         ActualChar = fgetc(file);
         if(ActualChar == 'M'){
-            Genre = 0,5;
+            Genre = Mas;
         }else if(ActualChar == 'F'){
-            Genre = 3,5;
+            Genre = Fem;
         }else if(ActualChar == 'I'){
-            Genre = 6,5;
+            Genre = InvGEN;
+        }else if (ActualChar == 'C'){
+            Card = 1;
+        }else {
+            int d = ftell(file);
+            printf("G%d\n", d);
         }
-
         do {
             ActualChar = fgetc(file); // On lit le caractère
         } while (ActualChar != '+');
 
+
+
         ActualChar = fgetc(file);
         if(ActualChar == 'S'){
-            Nombre = 0,5;
+            Nombre = SG;
         }else if(ActualChar == 'P'){
-            Nombre = 1,5;
+            Nombre = PL;
         }else if(ActualChar == 'I'){
-            Nombre = 2,5;
-        }
+            Nombre = InvPL;
+        }/*else {
+            int d = ftell(file);
+            printf("N%d\n", d);
+        }*/
+
+        fseek(file, StartPosition, SEEK_SET);
 
         do {
             ActualChar = fgetc(file);
@@ -154,23 +317,107 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             //printf("%c",name[i]);
             i++;
         } while (name[i-1] != '\t');
-
+        i = 0;
         while(name[i] != '\t'){
-            pn->toto[(int)(Genre + Nombre)][i] = name[i];
-        }
+            if(Card == 1){
+                pn->toto[9][i] = name[i];
+            }else{
+                pn->toto[(int)(Genre + Nombre-1)][i] = name[i];
+            }
 
+            i++;
+        }
     }
     else if(strcmp(filename, "verbs") == 0){
 
+        file = fopen("verbs.txt", "r");
+        fseek(file, ActualPosition, SEEK_SET);
+        if(pn->toto == NULL){
+            // initialisation d'un tableau de 10 char*
+            pn->toto = (char**)malloc(19*sizeof(char*));
+            for (int j = 0; j < 19; ++j) {
+                //pn->toto[j] = (char*)malloc(100*sizeof(char));
+                pn->toto[j] = (char*)calloc(100,sizeof(char));
+            }
+
+        }
+        do {
+            ActualChar = fgetc(file); // On lit le caractère
+        } while (ActualChar != ':');
+
+        ActualChar = fgetc(file);
+        if(ActualChar == 'I'){
+            ActualChar = fgetc(file);
+            if(ActualChar == 'P'){
+                ActualChar = fgetc(file);
+                if(ActualChar == 'r'){
+                    ActualChar = fgetc(file);
+                    if(ActualChar == 'e'){
+                        Temps = IPre;
+                    }else {
+                        //BREAK
+                    }
+                }else {
+                    //BREAK
+                }
+            }else if(ActualChar == 'I'){
+                ActualChar = fgetc(file);
+                if(ActualChar == 'm') {
+                    ActualChar = fgetc(file);
+                    if (ActualChar == 'p') {
+                        Temps = IImp;
+                    } else {
+                        //BREAK
+                    }
+                }
+            }else if(ActualChar == 'n'){
+                ActualChar = fgetc(file);
+                if(ActualChar == 'f'){
+                    ActualChar = fgetc(file);
+                    if(ActualChar == 'p') {
+                        Inf = 1;
+                    }else{
+                        //BREAK
+                    }
+                }else {
+                    //BREAK
+                }
+            }else {
+                //BREAK
+            }
+        }else if(ActualChar == 'S'){
+            ActualChar = fgetc(file);
+            if(ActualChar == 'P'){
+                ActualChar = fgetc(file);
+                if(ActualChar == 'r'){
+                    ActualChar = fgetc(file);
+                    if(ActualChar == 'e'){
+                        Temps = SPre;
+                    }else {
+                        //BREAK
+                    }
+                }else {
+                    //BREAK
+                }
+            }else {
+                //BREAK
+            }
+        }else {
+            //BREAK
+        }
+
+        do {
+            ActualChar = fgetc(file); // On lit le caractère
+        } while (ActualChar != '+');
     }
+    /*
     else if(strcmp(filename, "adverbs") == 0){
 
     }*/
-    if (Nombre == InvPL){
+    /*if (Nombre == InvPL){
         displayNode(pn,filename);
         printf("\n");
-    }
-    //printf("%c",pn->toto[0][0]);
+    }*/
     fclose(file);
 }
 
