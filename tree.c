@@ -1,42 +1,57 @@
 #include "tree.h"
-
-char * ChooseWord(t_tree t) {
+void maFonction() {
+    int test = rand();
+    printf("%d\n", test);
+}
+t_baseFlechie ChooseWord(t_tree t) {
+    //srand(time(NULL));
     p_node tmp;
-    int cpt = 0, random, i = 0, choice, stop;
-    char *word = (char *) malloc(50 * sizeof(char));
-    tmp = t.root->kid;
-    srand( time( NULL ) );
-    random = rand() % 26;
 
+    t_baseFlechie bf;
+
+    int cpt = 0, random = 0, i = 0, choice, stop;
+    bf.word = (char *) malloc(50 * sizeof(char));
+    tmp = t.root->kid;
+    int SiblingsCount = CountSiblings(t,tmp);
+    if(SiblingsCount == 0){
+        SiblingsCount = 1;
+    }
+    random = rand() % SiblingsCount;
+    /*bf.random = random;
+    if(bf.random == random){
+        random = random+1%23456789;
+        bf.random = random;
+    }*/
     while (cpt < random ) {
         tmp = tmp->siblings;
         cpt++;
     }
 
-    word[i] = tmp->lettre;
+    bf.word[i] = tmp->lettre;
     i++;
     tmp = tmp->kid;
     stop = 1;
 
     while (stop != 0) {  //We will run while stop is different from 0
         if (tmp->siblings == NULL) {  //If it has no sibling we go to the kid.
-            if (tmp ->kid != NULL){   // Verify if the kids are null or not, if yes, we are at the end of the word.
-                word[i] = tmp->lettre;
+            if (tmp ->kid != NULL){  //a changer comparer toto != null                   // Verify if the kids are null or not, if yes, we are at the end of the word.
+                bf.word[i] = tmp->lettre;
                 tmp = tmp->kid;
             }
             else {
-                word[i] = tmp->lettre;
+                bf.word[i] = tmp->lettre;
                 stop = 0;
             }
         } else {   // if it has siblings, we will choose randomly one of them.
             choice = rand() % 2;  //Choose randomly if we want to use siblings or not
+
             if (choice == 0) {
                 if (tmp ->kid != NULL){
-                    word[i] = tmp->lettre;
+                    bf.word[i] = tmp->lettre;
                     tmp = tmp->kid;
                 }
                 else {
-                    word[i] = tmp->lettre;
+                    bf.word[i] = tmp->lettre;
                     stop = 0;
                 }
 
@@ -48,11 +63,11 @@ char * ChooseWord(t_tree t) {
                     cpt++;
                 }
                 if( tmp->kid != NULL){
-                    word[i] = tmp->lettre;
+                    bf.word[i] = tmp->lettre;
                     tmp = tmp->kid;
                 }
                 else {
-                    word[i] = tmp->lettre;
+                    bf.word[i] = tmp->lettre;
                     stop = 0;
                 }
 
@@ -60,9 +75,104 @@ char * ChooseWord(t_tree t) {
         }
         i++;
     }
-    word[i + 1] = 0;
-    word = (char *) realloc(word, i * sizeof(char));;
-    return word;
+    bf.word[i + 1] = 0;
+    bf.word = (char *) realloc(bf.word, i * sizeof(char));
+    bf.p = tmp;
+    return bf;
+}
+
+void WriteSentence(t_tree name,t_tree adj, t_tree adv, t_tree verb){
+
+    //Modèle 1   nom-adjectif-verbe-nom
+    printf("Modèle 1 :");
+    DisplayWord(ChooseWord(name));
+    printf("-");
+    DisplayWord(ChooseWord(adj));
+    printf("-");
+    DisplayWord(ChooseWord(verb));
+    printf("-");
+    DisplayWord(ChooseWord(name));
+    printf("\n");
+
+    //Modèle 2 nom-verbe-qui-verbe-name-adjectif
+    printf("Modèle 2 :");
+    DisplayWord(ChooseWord(name));
+    printf("-qui-");
+    DisplayWord(ChooseWord(verb));
+    printf("-");
+    DisplayWord(ChooseWord(verb));
+    printf("-");
+    DisplayWord(ChooseWord(name));
+    printf("-");
+    DisplayWord(ChooseWord(adj));
+
+    printf("\n");
+
+    //Modèle 3 ?  nom-adjectif-verbe-adverbe-nom
+    printf("Modèle 3 :");
+    DisplayWord(ChooseWord(name));
+    printf("-");
+    DisplayWord(ChooseWord(adj));
+    printf("-");
+    DisplayWord(ChooseWord(verb));
+    printf("-");
+    DisplayWord(ChooseWord(adv));
+    printf("-");
+    DisplayWord(ChooseWord(name));
+
+    printf("\n");
+
+
+}
+
+p_node recherche(t_tree t,char* mot,char* filename){
+    p_node s=t.root;
+    s=s->kid;
+    int row=0;
+    if (filename=="adverbs"){
+        row=1;
+    }
+    if (filename=="verbs"){
+        row=19;
+    }
+    if(filename=="names"){
+        row=9;
+    }
+    else{  // adjectives
+        row=10;
+    }
+    return verif_kid(s,row,mot);
+
+}
+
+p_node verif_kid(p_node pn,int row, char* mot){
+    if (pn!=NULL) {
+        if (pn->toto != NULL) {
+            for (int i = 0; i < row; i++) {
+                if (mot == pn->toto[i]) {
+                    return pn;
+                }
+                else{
+                    return NULL;
+                }
+            }
+
+        }
+        else {
+            p_node tmp= verif_kid(pn->kid,row,mot);
+            p_node tmp1=verif_kid(pn->siblings,row,mot);
+            if (tmp!=NULL){
+                return tmp;
+            }
+            else{
+                return tmp1;}
+        }
+
+    }
+    else{
+        return NULL;
+    }
+
 }
 
 int CountSiblings(t_tree t, p_node p){
@@ -75,36 +185,11 @@ int CountSiblings(t_tree t, p_node p){
     return cpt;
 }
 
-void DisplayWord(char * word){
+void DisplayWord(t_baseFlechie bf){
     int i = 0;
-    while (word[i] != 0){
-        printf("%c", word[i]);
+    while (bf.word[i] != 0){
+        printf("%c", bf.word[i]);
         i++;
-    }
-}
-
-void recherche_mot(t_tree t,char* mot){   // parcourir l arbre au fur et a mesure / creer un stop dans le while et imbrique le if cpt = machin dansle while
-    //et mettre le stop a 0. cherchez dansles formes flechies de la node
-    p_node pn = t.root;
-    pn=pn->kid;
-    int i =0;
-    int cpt =0;
-    int length = strlen(mot);
-    while (pn->kid!=NULL) {
-        if (mot[i] == pn->lettre) {
-            pn = pn->kid;
-            cpt+=1;
-            i++;
-        }
-        else {
-            pn = pn->siblings;
-        }
-    }
-    if (cpt==length){
-        printf("mot trouvé");
-    }
-    else{
-        printf("mot non trouvé");
     }
 }
 
@@ -114,16 +199,13 @@ t_tree createTree(char a){
     return nouv;
 }
 
+/*
 void displayNode(p_node pn, char* filename){
     if(strcmp(filename, "names") == 0){
 
         for (int j = 0; j < 9; ++j) {
-            DisplayWord(pn->toto[j]);/*
-            int i = 0;
-            while (pn->toto[j][i] != 0){
-                printf("%c",pn->toto[j][i]);
-                i++;
-            }*/
+            DisplayWord(pn->toto[j]);
+            }
             if (pn->toto[j][0] != 0){
                 printf("\n");
             }
@@ -141,7 +223,7 @@ void displayNode(p_node pn, char* filename){
             }
         }
     }
-}
+}*/
 
 void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosition){
     FILE* file;
@@ -158,8 +240,9 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
     int Inf = 0;
     int Personne = 0;
     int Temps = 0;
+    int vNombre = 0;
     const int IPre = 1;
-    const int IImp = 2;                 //Personne + Temps = position du tableau(Personne en ligne et Temps en colone)
+    const int IImp = 2;                 //Personne + Temps + Nombre = position du tableau(Personne en ligne et Temps en colone)
     const int SPre = 3;
     const int vSG = 0;
     const int vPL = 9;
@@ -181,9 +264,8 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
                 //pn->toto[j] = (char*)malloc(100*sizeof(char));
                 pn->toto[j] = (char*)calloc(100,sizeof(char));
             }
-
         }
-
+        int k;
         do {
             ActualChar = fgetc(file); // On lit le caractère
             /*k++;
@@ -192,11 +274,12 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
 
                 printf("%c", ActualChar);
             }
-            if(k>7){
-                printf("%d\n",k);
+            if(k>7) {
+                printf("%d\n", k);
 
                 printf("%d\n", d);
-                break;*/
+                break;
+            }*/
         } while (ActualChar != ':');
 
         ActualChar = fgetc(file);
@@ -328,16 +411,16 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             i++;
         }
     }
-    else if(strcmp(filename, "verbs") == 0){
+    else if(strcmp(filename, "verbs") == 0) {
 
         file = fopen("verbs.txt", "r");
         fseek(file, ActualPosition, SEEK_SET);
-        if(pn->toto == NULL){
+        if (pn->toto == NULL) {
             // initialisation d'un tableau de 10 char*
-            pn->toto = (char**)malloc(19*sizeof(char*));
+            pn->toto = (char **) malloc(19 * sizeof(char *));
             for (int j = 0; j < 19; ++j) {
                 //pn->toto[j] = (char*)malloc(100*sizeof(char));
-                pn->toto[j] = (char*)calloc(100,sizeof(char));
+                pn->toto[j] = (char *) calloc(100, sizeof(char));
             }
 
         }
@@ -345,79 +428,160 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             ActualChar = fgetc(file); // On lit le caractère
         } while (ActualChar != ':');
 
-        ActualChar = fgetc(file);
-        if(ActualChar == 'I'){
+        while(ActualChar != EOF && ActualChar != '\n') {
+
             ActualChar = fgetc(file);
-            if(ActualChar == 'P'){
+            if (ActualChar == 'I') {
                 ActualChar = fgetc(file);
-                if(ActualChar == 'r'){
+                if (ActualChar == 'P') {
                     ActualChar = fgetc(file);
-                    if(ActualChar == 'e'){
-                        Temps = IPre;
-                    }else {
-                        //BREAK
-                    }
-                }else {
-                    //BREAK
-                }
-            }else if(ActualChar == 'I'){
-                ActualChar = fgetc(file);
-                if(ActualChar == 'm') {
-                    ActualChar = fgetc(file);
-                    if (ActualChar == 'p') {
-                        Temps = IImp;
+                    if (ActualChar == 'r') {
+                        ActualChar = fgetc(file);
+                        if (ActualChar == 'e') {
+                            Temps = IPre;
+                        } else {
+                            int d = ftell(file);
+                            //printf("Temps IPr%d\n", d);
+                        }
                     } else {
-                        //BREAK
+                        int d = ftell(file);
+                        //printf("Temps IP%d\n", d);
                     }
-                }
-            }else if(ActualChar == 'n'){
-                ActualChar = fgetc(file);
-                if(ActualChar == 'f'){
+                } else if (ActualChar == 'I') {
                     ActualChar = fgetc(file);
-                    if(ActualChar == 'p') {
+                    if (ActualChar == 'm') {
+                        ActualChar = fgetc(file);
+                        if (ActualChar == 'p') {
+                            Temps = IImp;
+                        } else {
+                            int d = ftell(file);
+                            //printf("Temps IIm%d\n", d);
+                        }
+                    } else {
+                        int d = ftell(file);
+                        //printf("Temps II%d\n", d);
+                    }
+                } else if (ActualChar == 'n') {
+                    ActualChar = fgetc(file);
+                    if (ActualChar == 'f') {
                         Inf = 1;
-                    }else{
-                        //BREAK
+                    } else {
+                        int d = ftell(file);
+                        //printf("Temps In%d\n", d);
                     }
-                }else {
-                    //BREAK
+                } else {
+                    int d = ftell(file);
+                    //printf("Temps I%d\n", d);
                 }
-            }else {
-                //BREAK
-            }
-        }else if(ActualChar == 'S'){
-            ActualChar = fgetc(file);
-            if(ActualChar == 'P'){
+            } else if (ActualChar == 'S') {
                 ActualChar = fgetc(file);
-                if(ActualChar == 'r'){
+                if (ActualChar == 'P') {
                     ActualChar = fgetc(file);
-                    if(ActualChar == 'e'){
-                        Temps = SPre;
-                    }else {
-                        //BREAK
+                    if (ActualChar == 'r') {
+                        ActualChar = fgetc(file);
+                        if (ActualChar == 'e') {
+                            Temps = SPre;
+                        } else {
+                            int d = ftell(file);
+                            //printf("Temps SPr%d\n", d);
+                        }
+                    } else {
+                        int d = ftell(file);
+                        //printf("Temps SP%d\n", d);
                     }
-                }else {
-                    //BREAK
+                } else {
+                    int d = ftell(file);
+                    //printf("Temps S %d\n", d);
                 }
-            }else {
-                //BREAK
+            } else {
+                int d = ftell(file);
+                //printf("Temps %d\n", d);
             }
-        }else {
-            //BREAK
+
+            if (Inf != 1) {
+                do{
+                    ActualChar = fgetc(file); // On lit le caractère
+
+                }while (ActualChar != '+');
+
+
+                ActualChar = fgetc(file);
+                if (ActualChar == 'S') {
+                    vNombre = vSG;
+                } else if (ActualChar == 'P') {
+                    vNombre = vPL;
+                } else {
+                    int d = ftell(file);
+                    //printf("Nombre %d\n", d);
+                }
+
+                do{
+                    ActualChar = fgetc(file); // On lit le caractère
+
+                }while (ActualChar != '+');
+
+                ActualChar = fgetc(file);
+                ActualChar = fgetc(file);
+                if (ActualChar == '1') {
+                    Personne = P1;
+                } else if (ActualChar == '2') {
+                    Personne = P2;
+                } else if (ActualChar == '3') {
+                    Personne = P3;
+                } else {
+                    int d = ftell(file);
+                    //printf("Personne %d\n", d);
+                }
+            }
+
+            int last = ftell(file);
+            fseek(file, StartPosition, SEEK_SET);
+
+            do {
+                ActualChar = fgetc(file);
+                name[i] = ActualChar;
+                //printf("%c",name[i]);
+                i++;
+            } while (name[i - 1] != '\t');
+            i = 0;
+            while (name[i] != '\t') {
+                if (Inf == 1) {
+                    pn->toto[18][i] = name[i];
+                } else {
+                    pn->toto[(int) (Temps + Personne + vNombre)][i] = name[i];
+                }
+
+                i++;
+
+            }
+            fseek(file, last, SEEK_SET);
+            ActualChar = fgetc(file);
         }
 
-        do {
-            ActualChar = fgetc(file); // On lit le caractère
-        } while (ActualChar != '+');
     }
-    /*
     else if(strcmp(filename, "adverbs") == 0){
+        file = fopen("adverbs.txt", "r");
+        fseek(file, ActualPosition, SEEK_SET);
+        if (pn->toto == NULL) {
+            // initialisation d'un tableau de 10 char*
+            pn->toto = (char **) malloc(sizeof(char *));
+            pn->toto[0] = (char *) calloc(100, sizeof(char));
+        }
+        fseek(file,StartPosition, SEEK_SET);
 
-    }*/
-    /*if (Nombre == InvPL){
-        displayNode(pn,filename);
-        printf("\n");
-    }*/
+        do {
+            ActualChar = fgetc(file);
+            name[i] = ActualChar;
+            //printf("%c",name[i]);
+            i++;
+        } while (name[i-1] != '\t');
+        i = 0;
+        while(name[i] != '\t'){
+            pn->toto[0][i] = name[i];
+            i++;
+        }
+    }
+
     fclose(file);
 }
 
