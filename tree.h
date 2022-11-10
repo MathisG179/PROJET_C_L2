@@ -18,7 +18,6 @@ void createFiles();
 t_tree createTree(char a);
 t_tree createTree_any(t_tree, char*);
 void insertFlechies(p_node, char*, int, int);
-void displayNode(p_node, char*);
 t_baseFlechie ChooseWord(t_tree t);
 int CountSiblings(t_tree t, p_node p);
 void DisplayWord(t_baseFlechie bf);
@@ -27,6 +26,4 @@ p_node recherche(t_tree t,char* mot,char* filename);
 void WriteSentence(t_tree name,t_tree adj, t_tree adv, t_tree verb);
 
 
-
-void maFonction();
 #endif //PROJET_C_L2_TREE_H

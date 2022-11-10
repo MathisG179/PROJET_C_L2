@@ -1,8 +1,5 @@
 #include "tree.h"
-void maFonction() {
-    int test = rand();
-    printf("%d\n", test);
-}
+
 t_baseFlechie ChooseWord(t_tree t) {
     //srand(time(NULL));
     p_node tmp;
@@ -129,16 +126,16 @@ p_node recherche(t_tree t,char* mot,char* filename){
     p_node s=t.root;
     s=s->kid;
     int row=0;
-    if (filename=="adverbs"){
+    if (strcmp(filename, "adverbs") == 0){
         row=1;
     }
-    if (filename=="verbs"){
+    if (strcmp(filename, "verbs") == 0){
         row=19;
     }
-    if(filename=="names"){
+    if(strcmp(filename, "names") == 0){
         row=9;
     }
-    else{  // adjectives
+    if(strcmp(filename, "adjectives") == 0){  // adjectives
         row=10;
     }
     return verif_kid(s,row,mot);
@@ -146,27 +143,38 @@ p_node recherche(t_tree t,char* mot,char* filename){
 }
 
 p_node verif_kid(p_node pn,int row, char* mot){
+    p_node tmp;
+    int k;
     if (pn!=NULL) {
         if (pn->toto != NULL) {
             for (int i = 0; i < row; i++) {
-                if (mot == pn->toto[i]) {
-                    return pn;
+                int j = 0;
+                for (j = 0; j < strlen(mot); ++j) {
+                    if(mot[j] == pn->toto[i][j]) {
+                        tmp = pn;
+                    }else{
+                        break;
+                    }
                 }
-                else{
-                    return NULL;
+                if (j == strlen(mot)){
+                    k = 1;
                 }
             }
-
-        }
-        else {
-            p_node tmp= verif_kid(pn->kid,row,mot);
-            p_node tmp1=verif_kid(pn->siblings,row,mot);
-            if (tmp!=NULL){
+            if(k == 1){
                 return tmp;
             }
-            else{
-                return tmp1;}
         }
+
+        p_node tmp= verif_kid(pn->kid,row,mot);
+        p_node tmp1=verif_kid(pn->siblings,row,mot);
+        if (tmp!=NULL){
+            return tmp;
+        }
+        else{
+            return tmp1;
+        }
+
+        return tmp;
 
     }
     else{
@@ -199,32 +207,6 @@ t_tree createTree(char a){
     return nouv;
 }
 
-/*
-void displayNode(p_node pn, char* filename){
-    if(strcmp(filename, "names") == 0){
-
-        for (int j = 0; j < 9; ++j) {
-            DisplayWord(pn->toto[j]);
-            }
-            if (pn->toto[j][0] != 0){
-                printf("\n");
-            }
-        }
-    }
-    else if(strcmp(filename, "adjectives") == 0){
-        for (int j = 0; j < 10; ++j) {
-            int i = 0;
-            while (pn->toto[j][i] != 0){
-                printf("%c",pn->toto[j][i]);
-                i++;
-            }
-            if (pn->toto[j][0] != 0){
-                printf("\n");
-            }
-        }
-    }
-}*/
-
 void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosition){
     FILE* file;
     int Card = 0;
@@ -238,9 +220,9 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
     const float InvPL = 2.5;
 
     int Inf = 0;
-    int Personne = 0;
-    int Temps = 0;
-    int vNombre = 0;
+    int Personne = -10000;
+    int Temps = -10000;
+    int vNombre = -10000;
     const int IPre = 1;
     const int IImp = 2;                 //Personne + Temps + Nombre = position du tableau(Personne en ligne et Temps en colone)
     const int SPre = 3;
@@ -548,7 +530,9 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
                 if (Inf == 1) {
                     pn->toto[18][i] = name[i];
                 } else {
-                    pn->toto[(int) (Temps + Personne + vNombre)][i] = name[i];
+                    if(Temps + Personne + vNombre >= 0){
+                        pn->toto[(int) (Temps + Personne + vNombre)][i] = name[i];
+                    }
                 }
 
                 i++;
