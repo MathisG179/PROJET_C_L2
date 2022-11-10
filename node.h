@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-
-
-
 typedef  struct s_node
 {
     char lettre;
@@ -20,6 +17,13 @@ typedef struct s_baseFlechie{
     p_node p;
     //int random;
 }t_baseFlechie;
+
+typedef struct s_accords{
+    char* word;
+    float Genre;
+    float Nombre;
+
+}t_accords;
 
 
 p_node createNode(char);
