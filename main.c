@@ -9,7 +9,7 @@ int main() {
     srand(time(NULL));
     FILE* f;
     t_tree NOM = createTree('0');
-    createFiles();
+    //createFiles();
     NOM = createTree_any(NOM, "names");
 
     t_tree VER = createTree('0');
@@ -30,7 +30,7 @@ int main() {
     //t_accords a;
 
     printf("\n-------------%ld-------------\n",time(0)-start);
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 10; ++i) {
         WriteSentenceFlechie(NOM,ADJ, ADV, VER);
         printf("\n");
     }

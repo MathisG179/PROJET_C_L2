@@ -185,162 +185,182 @@ t_accords ChooseWordFlechie(t_baseFlechie bf){
 
 }
 
-void WriteSentenceFlechie(t_tree name,t_tree adj, t_tree adv, t_tree verb){
+void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
     int random;
     int i, k = 0;
+
+
+
+
     //Modèle 1   nom-adjectif-verbe-nom
+
+
+
+
     printf("Modèle 1 : ");
     t_accords name11 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name11;
     bf_name11.word = name11.word;
 
-    if(name11.Nombre == PL){
-        random = rand()%9;
-        if(random == 0){
+    if (name11.Nombre == PL) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("les ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("des ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mes ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("tes ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("ses ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("nos ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("vos ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leurs ");
+        } else {
+            printf("DETERMINANT PL (random = %d", random);
         }
     }
-    else if(name11.Genre == InvGEN){
-        random = rand()%2;
-        if(random == 0){
-            random = rand()%9;
-            if(random == 0){
+    else if (name11.Genre == InvGEN) {
+        random = rand() % 2;
+        if (random == 0) {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("le ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("un ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("mon ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ton ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("son ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Mas (random = %d", random);
             }
-        }else{
-            random = rand()%9;
-            if(random == 0){
+        } else {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("la ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("une ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("ma ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ta ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("sa ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Fem (random = %d", random);
             }
         }
     }
-    else if(name11.Genre == Mas){
-        random = rand()%9;
-        if(random == 0){
+    else if (name11.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("le ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("un ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mon ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("ton ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("son ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("notre ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("votre ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Mas (random = %d", random);
         }
-    }
-    else if(name11.Genre == Fem){
-        random = rand()%9;
-        if(random == 0){
+    } else if (name11.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("la ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("une ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("ma ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("ta ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("sa ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("notre ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("votre ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Fem (random = %d", random);
         }
-    }
-    else{
-        printf("%.1f ",name11.Genre);
+    } else {
+        printf("%.1f ", name11.Genre);
     }
     DisplayWord(bf_name11);
     //printf("%.1f;%.1f",name11.Genre,name11.Nombre);
     printf(" | ");
 
-    t_baseFlechie bf_adj11 = ChooseWordBase(adj);
-    p_node pn_adj11 = bf_adj11.p;
+    t_baseFlechie bf_adj11;
+    p_node pn_adj11;
     do {
-        t_baseFlechie bf_adj11 = ChooseWordBase(adj);
-        p_node pn_adj11 = bf_adj11.p;
-    }while(pn_adj11->toto[(int)(name11.Genre + name11.Nombre - 1)] == 0);
+        bf_adj11 = ChooseWordBase(adj);
+        pn_adj11 = bf_adj11.p;
+    } while (pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)][0] == 0);
+    if(name11.Genre == Fem){
+        //printf("%.1f;%.1f ",name11.Genre,name11.Nombre);
+    }
+    bf_adj11.word = pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)];
     DisplayWord(bf_adj11);
     printf(" | ");
-
 
 
     t_baseFlechie bf_verb11 = ChooseWordBase(verb);
     p_node pn_verb11 = bf_verb11.p;
     do {
         if (name11.Nombre == SG) {
-            random = 7 + rand() % 3;          //7 ou 8 ou 9
+            random = 6 + rand() % 3;          //6 ou 7 ou 8
         } else if (name11.Nombre == PL) {
-            random = 16 + rand() % 3;          //16 ou 17 ou 18
+            random = 15 + rand() % 3;          //15 ou 16 ou 17
         } else if (name11.Nombre == InvPL) {
             random = rand() % 2;
             if (random == 0) {
-                random = 7 + rand() % 3;          //7 ou 8 ou 9
+                random = 6 + rand() % 3;          //6 ou 7 ou 8
             } else {
-                random = 16 + rand() % 3;          //16 ou 17 ou 18
+                random = 15 + rand() % 3;          //15 ou 16 ou 17
             }
         }
         i = 0;
-        while(i<random){
+        while (i < random) {
             i++;
         }
         k++;
-        if(k>15){
+        if (k > 10) {
             k = 0;
             bf_verb11 = ChooseWordBase(verb);
             pn_verb11 = bf_verb11.p;
         }
-    }while(pn_verb11->toto[i][0] == 0);
+    } while (pn_verb11->toto[i][0] == 0);
+    //printf(" random = %d;",random);
 
     bf_verb11.word = pn_verb11->toto[i];
     DisplayWord(bf_verb11);
@@ -350,260 +370,284 @@ void WriteSentenceFlechie(t_tree name,t_tree adj, t_tree adv, t_tree verb){
     t_baseFlechie bf_name21;
     bf_name21.word = name21.word;
 
-    if(name21.Nombre == PL){
-        random = rand()%9;
-        if(random == 0){
+    if (name21.Nombre == PL) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("les ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("des ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mes ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("tes ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("ses ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("nos ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("vos ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leurs ");
+        } else {
+            printf("DETERMINANT PL (random = %d", random);
         }
-    }
-    else if(name21.Genre == Mas){
-        random = rand()%9;
-        if(random == 0){
-            printf("le ");
-        }else if(random == 2){
-            printf("un ");
-        }else if(random == 3){
-            printf("mon ");
-        }else if(random == 4){
-            printf("ton ");
-        }else if(random == 5){
-            printf("son ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name21.Genre == Fem){
-        random = rand()%9;
-        if(random == 0){
-            printf("la ");
-        }else if(random == 2){
-            printf("une ");
-        }else if(random == 3){
-            printf("ma ");
-        }else if(random == 4){
-            printf("ta ");
-        }else if(random == 5){
-            printf("sa ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name21.Genre == InvGEN){
-        random = rand()%2;
-        if(random == 0){
-            random = rand()%9;
-            if(random == 0){
+    } else if (name21.Genre == InvGEN) {
+        random = rand() % 2;
+        if (random == 0) {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("le ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("un ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("mon ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ton ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("son ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Mas (random = %d", random);
             }
-        }else{
-            random = rand()%9;
-            if(random == 0){
+        } else {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("la ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("une ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("ma ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ta ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("sa ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Fem (random = %d", random);
             }
         }
-    }
-    else{
-        printf("%.1f ",name21.Genre);
+    } else if (name21.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("le ");
+        } else if (random == 1) {
+            printf("un ");
+        } else if (random == 2) {
+            printf("mon ");
+        } else if (random == 3) {
+            printf("ton ");
+        } else if (random == 4) {
+            printf("son ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+        }
+    } else if (name21.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("la ");
+        } else if (random == 1) {
+            printf("une ");
+        } else if (random == 2) {
+            printf("ma ");
+        } else if (random == 3) {
+            printf("ta ");
+        } else if (random == 4) {
+            printf("sa ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+        }
+    } else {
+        printf("%.1f ", name21.Genre);
     }
     DisplayWord(bf_name21);
     //printf("%.1f;%.1f",name21.Genre,name21.Nombre);
 
 
 
+
     //Modèle 2   nom-adjectif-verbe-nom
+
+
+
+
     printf("\nModèle 2 : ");
     t_accords name12 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name12;
     bf_name12.word = name12.word;
 
-    if(name12.Nombre == PL){
-        random = rand()%9;
-        if(random == 0){
+    if (name12.Nombre == PL) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("les ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("des ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mes ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("tes ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("ses ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("nos ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("vos ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leurs ");
+        } else {
+            printf("DETERMINANT PL (random = %d", random);
         }
     }
-    else if(name12.Genre == Mas){
-        random = rand()%9;
-        if(random == 0){
-            printf("le ");
-        }else if(random == 2){
-            printf("un ");
-        }else if(random == 3){
-            printf("mon ");
-        }else if(random == 4){
-            printf("ton ");
-        }else if(random == 5){
-            printf("son ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name12.Genre == Fem){
-        random = rand()%9;
-        if(random == 0){
-            printf("la ");
-        }else if(random == 2){
-            printf("une ");
-        }else if(random == 3){
-            printf("ma ");
-        }else if(random == 4){
-            printf("ta ");
-        }else if(random == 5){
-            printf("sa ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name12.Genre == InvGEN){
-        random = rand()%2;
-        if(random == 0){
-            random = rand()%9;
-            if(random == 0){
+    else if (name12.Genre == InvGEN) {
+        random = rand() % 2;
+        if (random == 0) {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("le ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("un ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("mon ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ton ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("son ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Mas (random = %d", random);
             }
-        }else{
-            random = rand()%9;
-            if(random == 0){
+        } else {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("la ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("une ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("ma ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ta ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("sa ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Fem (random = %d", random);
             }
         }
     }
-    else{
-        printf("%.1f ",name12.Genre);
+    else if (name12.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("le ");
+        } else if (random == 1) {
+            printf("un ");
+        } else if (random == 2) {
+            printf("mon ");
+        } else if (random == 3) {
+            printf("ton ");
+        } else if (random == 4) {
+            printf("son ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+        }
+    }
+    else if (name12.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("la ");
+        } else if (random == 1) {
+            printf("une ");
+        } else if (random == 2) {
+            printf("ma ");
+        } else if (random == 3) {
+            printf("ta ");
+        } else if (random == 4) {
+            printf("sa ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+        }
+    }
+    else {
+        printf("%.1f ", name12.Genre);
     }
     DisplayWord(bf_name12);
-    //printf("%.1f;%.1f",name12.Genre,name12.Nombre);
+
     printf(" | ");
 
     printf("qui");
+
     printf(" | ");
 
     t_baseFlechie bf_verb12 = ChooseWordBase(verb);
     p_node pn_verb12 = bf_verb12.p;
     do {
         if (name12.Nombre == SG) {
-            random = 7 + rand() % 3;          //7 ou 8 ou 9
+            random = 6 + rand() % 3;          //6 ou 7 ou 8
         } else if (name12.Nombre == PL) {
-            random = 16 + rand() % 3;          //16 ou 17 ou 18
+            random = 15 + rand() % 3;          //15 ou 16 ou 17
         } else if (name12.Nombre == InvPL) {
             random = rand() % 2;
             if (random == 0) {
-                random = 7 + rand() % 3;          //7 ou 8 ou 9
+                random = 6 + rand() % 3;          //6 ou 7 ou 8
             } else {
-                random = 16 + rand() % 3;          //16 ou 17 ou 18
+                random = 15 + rand() % 3;          //15 ou 16 ou 17
             }
         }
+
         i = 0;
-        while(i<random){
+        while (i < random) {
             i++;
         }
         k++;
-        if(k>15){
+        if (k > 10) {
             k = 0;
             bf_verb12 = ChooseWordBase(verb);
             pn_verb12 = bf_verb12.p;
         }
-    }while(pn_verb12->toto[i][0] == 0);
+    } while (pn_verb12->toto[i][0] == 0);
+    //printf(" random = %d;",random);
 
     bf_verb12.word = pn_verb12->toto[i];
     DisplayWord(bf_verb12);
@@ -613,310 +657,344 @@ void WriteSentenceFlechie(t_tree name,t_tree adj, t_tree adv, t_tree verb){
     p_node pn_verb22 = bf_verb22.p;
     do {
         if (name12.Nombre == SG) {
-            random = 7 + rand() % 3;          //7 ou 8 ou 9
+            random = 6 + rand() % 3;          //6 ou 7 ou 8
         } else if (name12.Nombre == PL) {
-            random = 16 + rand() % 3;          //16 ou 17 ou 18
+            random = 15 + rand() % 3;          //15 ou 16 ou 17
         } else if (name12.Nombre == InvPL) {
             random = rand() % 2;
             if (random == 0) {
-                random = 7 + rand() % 3;          //7 ou 8 ou 9
+                random = 6 + rand() % 3;          //6 ou 7 ou 8
             } else {
-                random = 16 + rand() % 3;          //16 ou 17 ou 18
+                random = 15 + rand() % 3;          //15 ou 16 ou 17
             }
         }
+
         i = 0;
-        while(i<random){
+        while (i < random) {
             i++;
         }
         k++;
-        if(k>15){
+        if (k > 10) {
             k = 0;
             bf_verb22 = ChooseWordBase(verb);
             pn_verb22 = bf_verb11.p;
         }
-    }while(pn_verb22->toto[i][0] == 0);
+    } while (pn_verb22->toto[i][0] == 0);
+    //printf(" random = %d;",random);
 
     bf_verb22.word = pn_verb22->toto[i];
     DisplayWord(bf_verb22);
+
     printf(" | ");
 
     t_accords name22 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name22;
     bf_name22.word = name22.word;
 
-    if(name22.Nombre == PL){
-        random = rand()%9;
-        if(random == 0){
+    if (name22.Nombre == PL) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("les ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("des ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mes ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("tes ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("ses ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("nos ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("vos ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leurs ");
+        } else {
+            printf("DETERMINANT PL (random = %d", random);
         }
     }
-    else if(name22.Genre == Mas){
-        random = rand()%9;
-        if(random == 0){
-            printf("le ");
-        }else if(random == 2){
-            printf("un ");
-        }else if(random == 3){
-            printf("mon ");
-        }else if(random == 4){
-            printf("ton ");
-        }else if(random == 5){
-            printf("son ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name22.Genre == Fem){
-        random = rand()%9;
-        if(random == 0){
-            printf("la ");
-        }else if(random == 2){
-            printf("une ");
-        }else if(random == 3){
-            printf("ma ");
-        }else if(random == 4){
-            printf("ta ");
-        }else if(random == 5){
-            printf("sa ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name22.Genre == InvGEN){
-        random = rand()%2;
-        if(random == 0){
-            random = rand()%9;
-            if(random == 0){
+    else if (name22.Genre == InvGEN) {
+        random = rand() % 2;
+        if (random == 0) {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("le ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("un ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("mon ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ton ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("son ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Mas (random = %d", random);
             }
-        }else{
-            random = rand()%9;
-            if(random == 0){
+        } else {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("la ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("une ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("ma ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ta ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("sa ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Fem (random = %d", random);
             }
         }
     }
-    else{
-        printf("%.1f ",name22.Genre);
+    else if (name22.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("le ");
+        } else if (random == 1) {
+            printf("un ");
+        } else if (random == 2) {
+            printf("mon ");
+        } else if (random == 3) {
+            printf("ton ");
+        } else if (random == 4) {
+            printf("son ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+        }
+    }
+    else if (name22.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("la ");
+        } else if (random == 1) {
+            printf("une ");
+        } else if (random == 2) {
+            printf("ma ");
+        } else if (random == 3) {
+            printf("ta ");
+        } else if (random == 4) {
+            printf("sa ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+        }
+    } else {
+        printf("%.1f ", name22.Genre);
     }
 
     DisplayWord(bf_name22);
     //printf("%.1f;%.1f",name22.Genre,name22.Nombre);
     printf(" | ");
 
-    t_baseFlechie bf_adj12 = ChooseWordBase(adj);
-    p_node pn_adj12 = bf_adj12.p;
+    t_baseFlechie bf_adj12;
+    p_node pn_adj12;
     do {
-        t_baseFlechie bf_adj12 = ChooseWordBase(adj);
-        p_node pn_adj12 = bf_adj12.p;
-    }while(pn_adj12->toto[(int)(name22.Genre + name22.Nombre - 1)] == 0);
+        bf_adj12 = ChooseWordBase(adj);
+        pn_adj12 = bf_adj12.p;
+    } while (pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)][0] == 0);
+
+    if(name12.Genre == Fem){
+        //printf("%.1f;%.1f ",name12.Genre,name12.Nombre);
+    }
+    bf_adj12.word = pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)];
     DisplayWord(bf_adj12);
 
 
 
+
     //Modèle 3   nom-adjectif-verbe-nom
+
+
+
+
     printf("\nModèle 3 : ");
     t_accords name13 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name13;
     bf_name13.word = name13.word;
 
-    if(name13.Nombre == PL){
-        random = rand()%9;
-        if(random == 0){
+    if (name13.Nombre == PL) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("les ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("des ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mes ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("tes ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("ses ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("nos ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("vos ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leurs ");
+        } else {
+            printf("DETERMINANT PL (random = %d", random);
         }
-    }
-    else if(name13.Genre == InvGEN){
-        random = rand()%2;
-        if(random == 0){
-            random = rand()%9;
-            if(random == 0){
+    } else if (name13.Genre == InvGEN) {
+        random = rand() % 2;
+        if (random == 0) {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("le ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("un ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("mon ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ton ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("son ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Mas (random = %d", random);
             }
-        }else{
-            random = rand()%9;
-            if(random == 0){
+        } else {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("la ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("une ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("ma ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ta ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("sa ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Fem (random = %d", random);
             }
         }
-    }
-    else if(name13.Genre == Mas){
-        random = rand()%9;
-        if(random == 0){
+    } else if (name13.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("le ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("un ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mon ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("ton ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("son ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("notre ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("votre ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Mas (random = %d", random);
         }
-    }
-    else if(name13.Genre == Fem){
-        random = rand()%9;
-        if(random == 0){
+    } else if (name13.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("la ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("une ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("ma ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("ta ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("sa ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("notre ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("votre ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Fem (random = %d", random);
         }
-    }
-    else{
-        printf("%.1f ",name13.Genre);
+    } else {
+        printf("%.1f ", name13.Genre);
     }
 
     DisplayWord(bf_name13);
     //printf("%.1f;%.1f",name13.Genre,name13.Nombre);
     printf(" | ");
 
-    t_baseFlechie bf_adj13 = ChooseWordBase(adj);
-    p_node pn_adj13 = bf_adj13.p;
+    t_baseFlechie bf_adj13;
+    p_node pn_adj13;
     do {
-        t_baseFlechie bf_adj13 = ChooseWordBase(adj);
-        p_node pn_adj13 = bf_adj13.p;
-    }while(pn_adj13->toto[(int)(name13.Genre + name13.Nombre - 1)] == 0);
+        bf_adj13 = ChooseWordBase(adj);
+        pn_adj13 = bf_adj13.p;
+    } while (pn_adj13->toto[(int) (name13.Genre + name13.Nombre - 1)][0] == 0);
+    if(name13.Genre == Fem){
+        //printf("%.1f;%.1f ",name13.Genre,name13.Nombre);
+    }
+    bf_adj13.word = pn_adj13->toto[(int) (name13.Genre + name13.Nombre - 1)];
+
     DisplayWord(bf_adj13);
     printf(" | ");
-
 
 
     t_baseFlechie bf_verb13 = ChooseWordBase(verb);
     p_node pn_verb13 = bf_verb13.p;
     do {
         if (name13.Nombre == SG) {
-            random = 7 + rand() % 3;          //7 ou 8 ou 9
+            random = 6 + rand() % 3;          //6 ou 7 ou 8
         } else if (name13.Nombre == PL) {
-            random = 16 + rand() % 3;          //16 ou 17 ou 18
+            random = 15 + rand() % 3;          //15 ou 16 ou 17
         } else if (name13.Nombre == InvPL) {
             random = rand() % 2;
             if (random == 0) {
-                random = 7 + rand() % 3;          //7 ou 8 ou 9
+                random = 6 + rand() % 3;          //6 ou 7 ou 8
             } else {
-                random = 16 + rand() % 3;          //16 ou 17 ou 18
+                random = 15 + rand() % 3;          //15 ou 16 ou 17
             }
         }
+
         i = 0;
-        while(i<random){
+        while (i < random) {
             i++;
         }
         k++;
-        if(k>15){
+        if (k > 10) {
             k = 0;
             bf_verb13 = ChooseWordBase(verb);
             pn_verb13 = bf_verb13.p;
         }
-    }while(pn_verb13->toto[i][0] == 0);
+    } while (pn_verb13->toto[i][0] == 0);
+    //printf(" random = %d;",random);
 
     bf_verb13.word = pn_verb13->toto[i];
     DisplayWord(bf_verb13);
@@ -930,110 +1008,116 @@ void WriteSentenceFlechie(t_tree name,t_tree adj, t_tree adv, t_tree verb){
     t_baseFlechie bf_name23;
     bf_name23.word = name23.word;
 
-    if(name23.Nombre == PL){
-        random = rand()%9;
-        if(random == 0){
+    if (name23.Nombre == PL) {
+        random = rand() % 8;
+        if (random == 0) {
             printf("les ");
-        }else if(random == 2){
+        } else if (random == 1) {
             printf("des ");
-        }else if(random == 3){
+        } else if (random == 2) {
             printf("mes ");
-        }else if(random == 4){
+        } else if (random == 3) {
             printf("tes ");
-        }else if(random == 5){
+        } else if (random == 4) {
             printf("ses ");
-        }else if(random == 6){
+        } else if (random == 5) {
             printf("nos ");
-        }else if(random == 7){
+        } else if (random == 6) {
             printf("vos ");
-        }else if(random == 8){
+        } else if (random == 7) {
             printf("leurs ");
+        } else {
+            printf("DETERMINANT PL (random = %d", random);
         }
-    }
-    else if(name23.Genre == Mas){
-        random = rand()%9;
-        if(random == 0){
-            printf("le ");
-        }else if(random == 2){
-            printf("un ");
-        }else if(random == 3){
-            printf("mon ");
-        }else if(random == 4){
-            printf("ton ");
-        }else if(random == 5){
-            printf("son ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name23.Genre == Fem){
-        random = rand()%9;
-        if(random == 0){
-            printf("la ");
-        }else if(random == 2){
-            printf("une ");
-        }else if(random == 3){
-            printf("ma ");
-        }else if(random == 4){
-            printf("ta ");
-        }else if(random == 5){
-            printf("sa ");
-        }else if(random == 6){
-            printf("notre ");
-        }else if(random == 7){
-            printf("votre ");
-        }else if(random == 8){
-            printf("leur ");
-        }
-    }
-    else if(name23.Genre == InvGEN){
-        random = rand()%2;
-        if(random == 0){
-            random = rand()%9;
-            if(random == 0){
+    } else if (name23.Genre == InvGEN) {
+        random = rand() % 2;
+        if (random == 0) {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("le ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("un ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("mon ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ton ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("son ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Mas (random = %d", random);
             }
-        }else{
-            random = rand()%9;
-            if(random == 0){
+        } else {
+            random = rand() % 8;
+            if (random == 0) {
                 printf("la ");
-            }else if(random == 2){
+            } else if (random == 1) {
                 printf("une ");
-            }else if(random == 3){
+            } else if (random == 2) {
                 printf("ma ");
-            }else if(random == 4){
+            } else if (random == 3) {
                 printf("ta ");
-            }else if(random == 5){
+            } else if (random == 4) {
                 printf("sa ");
-            }else if(random == 6){
+            } else if (random == 5) {
                 printf("notre ");
-            }else if(random == 7){
+            } else if (random == 6) {
                 printf("votre ");
-            }else if(random == 8){
+            } else if (random == 7) {
                 printf("leur ");
+            } else {
+                printf("DETERMINANT InvGen -> Fem (random = %d", random);
             }
         }
-    }
-    else{
-        printf("%.1f ",name23.Genre);
+    } else if (name23.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("le ");
+        } else if (random == 1) {
+            printf("un ");
+        } else if (random == 2) {
+            printf("mon ");
+        } else if (random == 3) {
+            printf("ton ");
+        } else if (random == 4) {
+            printf("son ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+        }
+    } else if (name23.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
+            printf("la ");
+        } else if (random == 1) {
+            printf("une ");
+        } else if (random == 2) {
+            printf("ma ");
+        } else if (random == 3) {
+            printf("ta ");
+        } else if (random == 4) {
+            printf("sa ");
+        } else if (random == 5) {
+            printf("notre ");
+        } else if (random == 6) {
+            printf("votre ");
+        } else if (random == 7) {
+            printf("leur ");
+        } else {
+            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+        }
+    } else {
+        printf("%.1f ", name23.Genre);
     }
     DisplayWord(bf_name23);
     //printf("%.1f;%.1f",name23.Genre,name23.Nombre);
@@ -1427,7 +1511,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
                     pn->toto[18][i] = name[i];
                 } else {
                     if(Temps + Personne + vNombre >= 0){
-                        pn->toto[(int) (Temps + Personne + vNombre)][i] = name[i];
+                        pn->toto[(int) (Temps + Personne + vNombre - 1)][i] = name[i];
                     }
                 }
                 i++;
