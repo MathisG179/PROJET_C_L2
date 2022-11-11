@@ -44,7 +44,7 @@ t_baseFlechie ChooseWordBase(t_tree t) {
 
     while (stop != 0 && tmp != NULL) {  //We will run while stop is different from 0
         if (tmp->siblings == NULL) {  //If it has no sibling we go to the kid.
-            if (tmp ->kid != NULL){  //a changer comparer toto != null                   // Verify if the kids are null or not, if yes, we are at the end of the word.
+            if (tmp->toto == NULL){  //a changer comparer toto == null                   // Verify if the kids are null or not, if yes, we are at the end of the word.
                 bf.word[i] = tmp->lettre;
                 tmp = tmp->kid;
             }
@@ -56,7 +56,7 @@ t_baseFlechie ChooseWordBase(t_tree t) {
             choice = rand() % 2;  //Choose randomly if we want to use siblings or not
 
             if (choice == 0) {
-                if (tmp ->kid != NULL){
+                if (tmp->toto == NULL){
                     bf.word[i] = tmp->lettre;
                     tmp = tmp->kid;
                 }
@@ -72,7 +72,7 @@ t_baseFlechie ChooseWordBase(t_tree t) {
                     tmp = tmp->siblings;
                     cpt++;
                 }
-                if( tmp->kid != NULL){
+                if( tmp->toto == NULL){
                     bf.word[i] = tmp->lettre;
                     tmp = tmp->kid;
                 }
