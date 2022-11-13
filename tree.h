@@ -27,6 +27,12 @@ p_node verif_kid(p_node pn,int row, char* mot);
 p_node recherche(t_tree t,char* mot,char* filename);
 void WriteSentenceBase(t_tree name,t_tree adj, t_tree adv, t_tree verb);
 void WriteSentenceFlechie(t_tree name,t_tree adj, t_tree adv, t_tree verb);
-
+void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb);
+int Verif_character(char *input);
+int Verif_Genre(char *input);
+int Count_flechies(p_node, int);
+void AutoCompletion(t_tree,t_tree,t_tree,t_tree);
+void PrintFlechies(p_node,int, int);
+char* rechercheNiemeFlechie(p_node, int, int);
 
 #endif //PROJET_C_L2_TREE_H

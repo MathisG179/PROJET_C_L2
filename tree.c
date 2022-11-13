@@ -6,6 +6,7 @@ const float SG = 0.5;
 const float PL = 1.5;
 const float InvPL = 2.5;
 
+
 const int IPre = 1;
 const int IImp = 2;                 //Personne + Temps + Nombre = position du tableau(Personne en ligne et Temps en colone)
 const int SPre = 3;
@@ -15,13 +16,295 @@ const int P1 = 0;
 const int P2 = 3;
 const int P3 = 6;
 
+
+void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb) {
+    char* motrecherche;
+    char* nature;
+    p_node tmp;
+    char *nature2;
+    char *genre;
+    int i = 0;
+    char *nombre;
+    int cpt=0;
+    int j=0;
+    char ** tab_type = (char**)malloc(20 * sizeof(char*));
+    int *idx = (int*)malloc(20*sizeof(int));
+    char **type = (char**)malloc(50 * sizeof(char*));
+    printf("Quel est le mot recherché au masculin singulier");
+    scanf("%c", &motrecherche);
+    while(Verif_character(motrecherche)==0){
+        printf("Wrong input");
+        printf("Quel est le mot recherché au masculin singulier ?");
+        scanf("%c", &motrecherche);
+    }
+    printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
+    scanf("%c", &nature);
+    while(Verif_character(&nature)==0){
+        printf("Wrong input");
+        printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
+        scanf("%c", &nature);
+    }
+    while(Verif_Genre(&nature)!=0){
+        printf("Wrong input");
+        printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
+        scanf("%c", &nature);
+    }
+    if (nature == "names") {
+        nature2 = "NOM";
+        tmp = recherche(nom, motrecherche, "names");
+    }
+    if (nature == "verbs") {
+        nature2 = "VERB";
+        tmp = recherche(verb, motrecherche, "verbs");
+    }
+    if (nature == "adjectives") {
+        nature2 = "ADJ";
+        tmp = recherche(adj, motrecherche, "adjectives");
+    }
+    if (nature == "adverbs") {
+        nature2 = "ADV";
+        tmp = recherche(adv, motrecherche, "adverbs");
+    }
+    if (tmp == NULL) {
+        printf("Le mot n'est dans le dico");
+    } else {
+        if (nature == "adverbs") {
+            printf("%s  %s  ADV\nLa forme fléchie des adverbes est leur forme de base.", motrecherche, tmp->toto[0]);
+        }
+        if (nature == "adjectives") {
+
+            while (tmp->toto[i] != motrecherche) {  //Trouver la forme fléchie du mot correspondant
+                i++;
+            }
+
+            // Trouver le genre et le nombre de l'adjectif
+            if (i == 0) {
+                genre = "Mas";
+                nombre = "SG";
+            }
+            if (i == 1) {
+                genre = "Mas";
+                nombre = "PL";
+            }
+            if (i == 2) {
+                genre = "Mas";
+                nombre = "InvPL";
+            }
+            if (i == 3) {
+                genre = "Fem";
+                nombre = "SG";
+            }
+            if (i == 4) {
+                genre = "Fem";
+                nombre = "PL";
+            }
+            if (i == 5) {
+                genre = "Fem";
+                nombre = "InvPl";
+            }
+            if (i == 6) {
+                genre = "InvGen";
+                nombre = "SG";
+            }
+            if (i == 7) {
+                genre = "InvGen";
+                nombre = "PL";
+            }
+            if (i == 8) {
+                genre = "InvGen";
+                nombre = "InvPl";
+            }
+            if (i == 9) {
+                genre = "Card"; // pour les nombres
+                nombre=" ";
+            }
+            printf("%s   %s   %s : %s+%s\n%s est un adjectif, accordé au %s  %s , et dont la forme de base est %s", motrecherche,
+                   tmp->toto[0], nature2, genre, nombre, motrecherche, genre, nombre, tmp->toto[0]);
+        }
+        if (nature == "names") {
+
+            while (tmp->toto[i] != motrecherche) {  //Trouver la forme fléchie du mot correspondant
+                i++;
+            }
+
+            // Trouver le genre et le nombre du mot
+            if (i == 0) {
+                genre = "Mas";
+                nombre = "SG";
+            }
+            if (i == 1) {
+                genre = "Mas";
+                nombre = "PL";
+            }
+            if (i == 2) {
+                genre = "Mas";
+                nombre = "InvPL";
+            }
+            if (i == 3) {
+                genre = "Fem";
+                nombre = "SG";
+            }
+            if (i == 4) {
+                genre = "Fem";
+                nombre = "PL";
+            }
+            if (i == 5) {
+                genre = "Fem";
+                nombre = "InvPl";
+            }
+            if (i == 6) {
+                genre = "InvGen";
+                nombre = "SG";
+            }
+            if (i == 7) {
+                genre = "InvGen";
+                nombre = "PL";
+            }
+            if (i == 8) {
+                genre = "InvGen";
+                nombre = "InvPl";
+            }
+            printf("%s   %s   %s : %s+%s\n%s est un Nom %s qui est %s de la forme de base %s", motrecherche,
+                   tmp->toto[0], nature2, genre, nombre, motrecherche, genre, nombre, tmp->toto[0]);
+        }
+        if (nature == "verbs") {
+            for (int i=0;i<=18;i++){  // On cherche l'index de notre mot
+                if(tmp->toto[i]==motrecherche){
+                    idx[j]=i;
+                    j++;
+                }
+            }
+            idx[j+1]=-1;  // Pour marquer la fin du tableau
+            while(idx[cpt]!=-1){  // On cherche toutes les formes du mot qui correspond au mot recherché
+                if(idx[cpt] == 0) {
+                    tab_type[cpt] = "IPre + SG + P1";
+                    type[cpt] = "Indicatif Présent, singulier, première personne";
+                    cpt++;
+                }
+                if(idx[cpt] == 1) {
+                    tab_type[cpt] = "IImp + SG + P1";
+                    type[cpt] = "Indicatif Imparfait, singulier, première personne";
+                    cpt++;
+                }if(idx[cpt] == 2) {
+                    tab_type[cpt] = "SPre + SG + P1";
+                    type[cpt] = "Indicatif Subjonctif, singulier, première personne";
+                    cpt++;
+                }if(idx[cpt] == 3) {
+                    tab_type[cpt] = "IPre + SG + P2";
+                    type[cpt] = "Indicatif Présent, singulier, deuxième personne";
+                    cpt++;
+                }if(idx[cpt] == 4) {
+                    tab_type[cpt] = "IImp + SG + P2";
+                    type[cpt] = "Indicatif Imparfait, singulier, deuxième personne";
+                    cpt++;
+                }if(idx[cpt] == 5) {
+                    tab_type[cpt] = "SPre + SG + P2";
+                    type[cpt] = "Indicatif Subjonctif, singulier, deuxième personne";
+                    cpt++;
+                }if(idx[cpt] == 6) {
+                    tab_type[cpt] = "IPre + SG + P3";
+                    type[cpt] = "Indicatif Présent, singulier, troisième personne";
+                    cpt++;
+                }if(idx[cpt] == 7) {
+                    tab_type[cpt] = "IImp + SG + P3";
+                    type[cpt] = "Indicatif Imparfait, singulier, troisième personne";
+                    cpt++;
+                }if(idx[cpt] == 8) {
+                    tab_type[cpt] = "SPre + SG + P3";
+                    type[cpt] = "Indicatif Subjonctif, singulier, troisième personne";
+                    cpt++;
+                }if(idx[cpt] == 9) {
+                    tab_type[cpt] = "IPre + PL + P1";
+                    type[cpt] = "Indicatif Présent, pluriel, première personne";
+                    cpt++;
+                }if(idx[cpt] == 10) {
+                    tab_type[cpt] = "IImp + PL + P1";
+                    type[cpt] = "Indicatif Imparfait, pluriel, première personne";
+                    cpt++;
+                }if(idx[cpt] == 11) {
+                    tab_type[cpt] = "SPre + PL + P1";
+                    type[cpt] = "Indicatif Subjonctif, pluriel, première personne";
+                    cpt++;
+                }if(idx[cpt] == 12) {
+                    tab_type[cpt] = "IPre + PL + P2";
+                    type[cpt] = "Indicatif Présent, pluriel, deuxième personne";
+                    cpt++;
+                }if(idx[cpt] == 13) {
+                    tab_type[cpt] = "IImp + PL + P2";
+                    type[cpt] = "Indicatif Imparfait, pluriel, deuxième personne";
+                    cpt++;
+                }if(idx[cpt] == 14) {
+                    tab_type[cpt] = "SPre + Pl + P2";
+                    type[cpt] = "Indicatif Subjonctif, pluriel, deuxième personne";
+                    cpt++;
+                }if(idx[cpt] == 15) {
+                    tab_type[cpt] = "IPre + PL + P3";
+                    type[cpt] = "Indicatif Présent, pluriel, troisième personne";
+                    cpt++;
+                }if(idx[cpt] == 16) {
+                    tab_type[cpt] = "IImp + PL + P3";
+                    type[cpt] = "Indicatif Imparfait, pluriel, troisième personne";
+                    cpt++;
+                }if(idx[cpt] == 17) {
+                    tab_type[cpt] = "SPre + PL + P3";
+                    type[cpt] = "Indicatif subjonctif, pluriel, troisième personne";
+                    cpt++;
+                }if(idx[cpt] == 18) {
+                    tab_type[cpt] = "Inf";
+                    type[cpt] = "Infinitif";
+                    cpt++;
+                }
+            }
+            tab_type[cpt+1]=" ";
+            type[cpt+1]=" ";
+            printf("%s   %s  Ver : ",motrecherche,tmp->toto[18]);
+            i=0;
+            while(tab_type[i]!=" "){
+                printf("%s",tab_type[i]);
+                if (tab_type[i+1]!=" "){
+                    printf("+");
+                }
+            }
+            printf("\n%s  est un verbe conjugué, dont sa forme de base est %s , la forme conjuguée correspond à\n",motrecherche,tmp->toto[18]);
+            while(tab_type[cpt]!=" "){
+                printf("%s : %s\n",tab_type[cpt],type[cpt]);
+            }
+
+        }
+    }
+}
+
+int Verif_character(char *input){
+    int i=0;
+    int stop=1;
+    while(stop != 0 || input[i]=='\0'){ // last character of a string
+        if(input[i]<'a' || input[i]>'z'){ // verify if there is a number in the word
+            stop=0;
+        }
+        else{
+            stop = 1;
+        }
+        i++;
+    }
+    return stop;
+}
+
+int Verif_Genre(char *input){
+    if (input!="adjectives" || input !="adverbs" || input!="verbs" || input!="names"){
+        return -1;
+    }
+    else{
+        return 0;
+    }
+}
+
 t_baseFlechie ChooseWordBase(t_tree t) {
     p_node tmp;
 
     t_baseFlechie bf;
 
     int cpt = 0, random = 0, i = 0, choice, stop;
-    bf.word = (char *) malloc(50 * sizeof(char));
+    bf.word = (char *)calloc(50,sizeof(char));
     tmp = t.root->kid;
     int SiblingsCount = CountSiblings(t,tmp);
     if(SiblingsCount != 0){
@@ -44,7 +327,7 @@ t_baseFlechie ChooseWordBase(t_tree t) {
 
     while (stop != 0 && tmp != NULL) {  //We will run while stop is different from 0
         if (tmp->siblings == NULL) {  //If it has no sibling we go to the kid.
-            if (tmp->toto == NULL){  //a changer comparer toto == null                   // Verify if the kids are null or not, if yes, we are at the end of the word.
+            if (tmp->toto == NULL){   // Verify if the kids are null or not, if yes, we are at the end of the word.
                 bf.word[i] = tmp->lettre;
                 tmp = tmp->kid;
             }
@@ -80,12 +363,10 @@ t_baseFlechie ChooseWordBase(t_tree t) {
                     bf.word[i] = tmp->lettre;
                     stop = 0;
                 }
-
             }
         }
         i++;
     }
-    bf.word[i + 1] = 0;
     bf.word = (char *) realloc(bf.word, i * sizeof(char));
     bf.p = tmp;
     return bf;
@@ -188,7 +469,15 @@ t_accords ChooseWordFlechie(t_baseFlechie bf){
 void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
     int random;
-    int i, k = 0;
+    int i, k = 0, ajout = 0, no = 0;
+    char add[10];
+    printf("Il se peut que certaines formes fléchies soient manquantes, souhaitez vous les ajouter au dictionnaire ?\n");
+
+    fgets(add,9, stdin);
+
+    if(add[0] == 'O' || add[0] == 'o' || add[0] == 'Y' || add[0] == 'y' || add[0] == '1'){
+        ajout = 1;
+    }
 
 
 
@@ -198,31 +487,31 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 
 
-    printf("Modèle 1 : ");
     t_accords name11 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name11;
     bf_name11.word = name11.word;
+    char* det11;
 
     if (name11.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
-            printf("les ");
+            det11 = "Les ";
         } else if (random == 1) {
-            printf("des ");
+            det11 = "Des ";
         } else if (random == 2) {
-            printf("mes ");
+            det11 = "Mes ";
         } else if (random == 3) {
-            printf("tes ");
+            det11 = "Tes ";
         } else if (random == 4) {
-            printf("ses ");
+            det11 = "Ses ";
         } else if (random == 5) {
-            printf("nos ");
+            det11 = "Nos ";
         } else if (random == 6) {
-            printf("vos ");
+            det11 = "Vos ";
         } else if (random == 7) {
-            printf("leurs ");
+            det11 = "Leurs ";
         } else {
-            printf("DETERMINANT PL (random = %d", random);
+            det11 = "DETERMINANT PL";
         }
     }
     else if (name11.Genre == InvGEN) {
@@ -230,108 +519,152 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
         if (random == 0) {
             random = rand() % 8;
             if (random == 0) {
-                printf("le ");
+                det11 = "Le ";
             } else if (random == 1) {
-                printf("un ");
+                det11 = "Un ";
             } else if (random == 2) {
-                printf("mon ");
+                det11 = "Mon ";
             } else if (random == 3) {
-                printf("ton ");
+                det11 = "Ton ";
             } else if (random == 4) {
-                printf("son ");
+                det11 = "Son ";
             } else if (random == 5) {
-                printf("notre ");
+                det11 = "Notre ";
             } else if (random == 6) {
-                printf("votre ");
+                det11 = "Votre ";
             } else if (random == 7) {
-                printf("leur ");
+                det11 = "Leur ";
             } else {
-                printf("DETERMINANT InvGen -> Mas (random = %d", random);
+                det11 = "DETERMINANT InvGen -> Mas";
             }
         } else {
             random = rand() % 8;
             if (random == 0) {
-                printf("la ");
+                det11 = "La ";
             } else if (random == 1) {
-                printf("une ");
+                det11 = "Une ";
             } else if (random == 2) {
-                printf("ma ");
+                det11 = "Ma ";
             } else if (random == 3) {
-                printf("ta ");
+                det11 = "Ta ";
             } else if (random == 4) {
-                printf("sa ");
+                det11 = "Sa ";
             } else if (random == 5) {
-                printf("notre ");
+                det11 = "Notre ";
             } else if (random == 6) {
-                printf("votre ");
+                det11 = "Votre ";
             } else if (random == 7) {
-                printf("leur ");
+                det11 = "Leur ";
             } else {
-                printf("DETERMINANT InvGen -> Fem (random = %d", random);
+                det11 = "DETERMINANT InvGen -> Fem";
             }
         }
     }
     else if (name11.Genre == Mas) {
         random = rand() % 8;
         if (random == 0) {
-            printf("le ");
+            det11 = ("le ");
         } else if (random == 1) {
-            printf("un ");
+            det11 = ("Un ");
         } else if (random == 2) {
-            printf("mon ");
+            det11 = ("Mon ");
         } else if (random == 3) {
-            printf("ton ");
+            det11 = ("Ton ");
         } else if (random == 4) {
-            printf("son ");
+            det11 = ("Son ");
         } else if (random == 5) {
-            printf("notre ");
+            det11 = ("Notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det11 = ("Votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det11 = ("Leur ");
         } else {
-            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+            det11 = ("DETERMINANT InvGen -> Mas");
         }
-    } else if (name11.Genre == Fem) {
+    }
+    else if (name11.Genre == Fem) {
         random = rand() % 8;
         if (random == 0) {
-            printf("la ");
+            det11 = ("La ");
         } else if (random == 1) {
-            printf("une ");
+            det11 = ("Une ");
         } else if (random == 2) {
-            printf("ma ");
+            det11 = ("Ma ");
         } else if (random == 3) {
-            printf("ta ");
+            det11 = ("Ta ");
         } else if (random == 4) {
-            printf("sa ");
+            det11 = ("Sa ");
         } else if (random == 5) {
-            printf("notre ");
+            det11 = ("Notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det11 = ("Votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det11 = ("Leur ");
         } else {
-            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+            det11 = ("DETERMINANT InvGen -> Fem");
         }
-    } else {
-        printf("%.1f ", name11.Genre);
     }
-    DisplayWord(bf_name11);
-    //printf("%.1f;%.1f",name11.Genre,name11.Nombre);
-    printf(" | ");
+    else {
+        det11 = ("%.1f ");
+    }
 
     t_baseFlechie bf_adj11;
     p_node pn_adj11;
     do {
         bf_adj11 = ChooseWordBase(adj);
         pn_adj11 = bf_adj11.p;
+
+        if(pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)][0] == 0 && ajout == 1){
+            printf("La forme au ");
+
+            char* genre;
+            if(name11.Genre == Mas){
+                printf("masculin ");
+                genre = "Mas";
+            }else if(name11.Genre == Fem){
+                printf("feminin ");
+                genre = "Fem";
+            }else{
+                printf("invariable en genre ");
+                genre = "InvGen";
+            }
+
+            char* nombre;
+            if(name11.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name11.Nombre == PL){
+                printf("pluriel ");
+                nombre = "PL";
+            }else{
+                printf("invariable en nombre ");
+                nombre = "InvPL";
+            }
+
+
+            printf("de l'adjectif \"");
+            DisplayWord(bf_adj11);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                        pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tAdj:%s+%s",missingFlechie,bf_adj11.word,genre,nombre);
+                fclose(file);
+            }
+        }
     } while (pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)][0] == 0);
-    if(name11.Genre == Fem){
-        //printf("%.1f;%.1f ",name11.Genre,name11.Nombre);
-    }
+
+
     bf_adj11.word = pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)];
-    DisplayWord(bf_adj11);
-    printf(" | ");
+
 
 
     t_baseFlechie bf_verb11 = ChooseWordBase(verb);
@@ -354,135 +687,184 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             i++;
         }
         k++;
+        if(pn_verb11->toto[i][0] == 0 && ajout == 1 && no == 0){
+            printf("La forme à la troisième personne du ");
+
+            char* nombre;
+            if(name11.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name11.Nombre == PL){
+                printf("pluriel ");
+                nombre = "PL";
+            }
+            char* temps;
+            if(random%3 == 0){
+                printf("au présent de l’indicatif ");
+                temps = "IPre";
+            }else if(random%3 == 1){
+                printf("à l’imparfait de l’indicatif ");
+                temps = "IImp";
+            }else if(random%3 == 2){
+                printf("au présent du subjonctif ");
+                temps = "SPre";
+            }
+
+            printf("du verbe \"");
+            DisplayWord(bf_verb11);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_verb11->toto[i][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tVer:%s+%s+P3",missingFlechie,bf_verb11.word,temps,nombre);
+                fclose(file);
+            }else{
+                no = 1;
+            }
+        }
+
         if (k > 10) {
             k = 0;
             bf_verb11 = ChooseWordBase(verb);
             pn_verb11 = bf_verb11.p;
+            no = 0;
         }
     } while (pn_verb11->toto[i][0] == 0);
-    //printf(" random = %d;",random);
+
 
     bf_verb11.word = pn_verb11->toto[i];
-    DisplayWord(bf_verb11);
-    printf(" | ");
+
 
     t_accords name21 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name21;
     bf_name21.word = name21.word;
+    char* det21;
 
     if (name21.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
-            printf("les ");
+            det21 = ("les ");
         } else if (random == 1) {
-            printf("des ");
+            det21 = ("des ");
         } else if (random == 2) {
-            printf("mes ");
+            det21 = ("mes ");
         } else if (random == 3) {
-            printf("tes ");
+            det21 = ("tes ");
         } else if (random == 4) {
-            printf("ses ");
+            det21 = ("ses ");
         } else if (random == 5) {
-            printf("nos ");
+            det21 = ("nos ");
         } else if (random == 6) {
-            printf("vos ");
+            det21 = ("vos ");
         } else if (random == 7) {
-            printf("leurs ");
+            det21 = ("leurs ");
         } else {
-            printf("DETERMINANT PL (random = %d", random);
+            det21 = ("DETERMINANT PL ");
         }
-    } else if (name21.Genre == InvGEN) {
+    }
+    else if (name21.Genre == InvGEN) {
         random = rand() % 2;
         if (random == 0) {
             random = rand() % 8;
             if (random == 0) {
-                printf("le ");
+                det21 = ("le ");
             } else if (random == 1) {
-                printf("un ");
+                det21 = ("un ");
             } else if (random == 2) {
-                printf("mon ");
+                det21 = ("mon ");
             } else if (random == 3) {
-                printf("ton ");
+                det21 = ("ton ");
             } else if (random == 4) {
-                printf("son ");
+                det21 = ("son ");
             } else if (random == 5) {
-                printf("notre ");
+                det21 = ("notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det21 = ("votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det21 = ("leur ");
             } else {
-                printf("DETERMINANT InvGen -> Mas (random = %d", random);
+                det21 = ("DETERMINANT InvGen -> Mas");
             }
         } else {
             random = rand() % 8;
             if (random == 0) {
-                printf("la ");
+                det21 = ("la ");
             } else if (random == 1) {
-                printf("une ");
+                det21 = ("une ");
             } else if (random == 2) {
-                printf("ma ");
+                det21 = ("ma ");
             } else if (random == 3) {
-                printf("ta ");
+                det21 = ("ta ");
             } else if (random == 4) {
-                printf("sa ");
+                det21 = ("sa ");
             } else if (random == 5) {
-                printf("notre ");
+                det21 = ("notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det21 = ("votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det21 = ("leur ");
             } else {
-                printf("DETERMINANT InvGen -> Fem (random = %d", random);
+                det21 = ("DETERMINANT InvGen -> Fem ");
             }
         }
-    } else if (name21.Genre == Mas) {
-        random = rand() % 8;
-        if (random == 0) {
-            printf("le ");
-        } else if (random == 1) {
-            printf("un ");
-        } else if (random == 2) {
-            printf("mon ");
-        } else if (random == 3) {
-            printf("ton ");
-        } else if (random == 4) {
-            printf("son ");
-        } else if (random == 5) {
-            printf("notre ");
-        } else if (random == 6) {
-            printf("votre ");
-        } else if (random == 7) {
-            printf("leur ");
-        } else {
-            printf("DETERMINANT InvGen -> Mas (random = %d", random);
-        }
-    } else if (name21.Genre == Fem) {
-        random = rand() % 8;
-        if (random == 0) {
-            printf("la ");
-        } else if (random == 1) {
-            printf("une ");
-        } else if (random == 2) {
-            printf("ma ");
-        } else if (random == 3) {
-            printf("ta ");
-        } else if (random == 4) {
-            printf("sa ");
-        } else if (random == 5) {
-            printf("notre ");
-        } else if (random == 6) {
-            printf("votre ");
-        } else if (random == 7) {
-            printf("leur ");
-        } else {
-            printf("DETERMINANT InvGen -> Fem (random = %d", random);
-        }
-    } else {
-        printf("%.1f ", name21.Genre);
     }
-    DisplayWord(bf_name21);
-    //printf("%.1f;%.1f",name21.Genre,name21.Nombre);
+    else if (name21.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
+            det21 = ("le ");
+        } else if (random == 1) {
+            det21 = ("un ");
+        } else if (random == 2) {
+            det21 = ("mon ");
+        } else if (random == 3) {
+            det21 = ("ton ");
+        } else if (random == 4) {
+            det21 = ("son ");
+        } else if (random == 5) {
+            det21 = ("notre ");
+        } else if (random == 6) {
+            det21 = ("votre ");
+        } else if (random == 7) {
+            det21 = ("leur ");
+        } else {
+            det21 = ("DETERMINANT InvGen -> Mas ");
+        }
+    }
+    else if (name21.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
+            det21 = ("la ");
+        } else if (random == 1) {
+            det21 = ("une ");
+        } else if (random == 2) {
+            det21 = ("ma ");
+        } else if (random == 3) {
+            det21 = ("ta ");
+        } else if (random == 4) {
+            det21 = ("sa ");
+        } else if (random == 5) {
+            det21 = ("notre ");
+        } else if (random == 6) {
+            det21 = ("votre ");
+        } else if (random == 7) {
+            det21 = ("leur ");
+        }
+        else {
+            det21 = ("DETERMINANT InvGen -> Fem");
+        }
+    }
+    else {
+        det21 = ("%.1f ");
+    }
+
 
 
 
@@ -492,31 +874,31 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 
 
-    printf("\nModèle 2 : ");
     t_accords name12 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name12;
     bf_name12.word = name12.word;
+    char* det12;
 
     if (name12.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
-            printf("les ");
+            det12 = ("Les ");
         } else if (random == 1) {
-            printf("des ");
+            det12 = ("Des ");
         } else if (random == 2) {
-            printf("mes ");
+            det12 = ("Mes ");
         } else if (random == 3) {
-            printf("tes ");
+            det12 = ("Tes ");
         } else if (random == 4) {
-            printf("ses ");
+            det12 = ("Ses ");
         } else if (random == 5) {
-            printf("nos ");
+            det12 = ("Nos ");
         } else if (random == 6) {
-            printf("vos ");
+            det12 = ("Vos ");
         } else if (random == 7) {
-            printf("leurs ");
+            det12 = ("Leurs ");
         } else {
-            printf("DETERMINANT PL (random = %d", random);
+            det12 = ("DETERMINANT PL (random = %d");
         }
     }
     else if (name12.Genre == InvGEN) {
@@ -524,101 +906,95 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
         if (random == 0) {
             random = rand() % 8;
             if (random == 0) {
-                printf("le ");
+                det12 = ("Le ");
             } else if (random == 1) {
-                printf("un ");
+                det12 = ("Un ");
             } else if (random == 2) {
-                printf("mon ");
+                det12 = ("Mon ");
             } else if (random == 3) {
-                printf("ton ");
+                det12 = ("Ton ");
             } else if (random == 4) {
-                printf("son ");
+                det12 = ("Son ");
             } else if (random == 5) {
-                printf("notre ");
+                det12 = ("Notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det12 = ("Votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det12 = ("Leur ");
             } else {
-                printf("DETERMINANT InvGen -> Mas (random = %d", random);
+                det12 = ("DETERMINANT InvGen -> Mas (random = %d");
             }
         } else {
             random = rand() % 8;
             if (random == 0) {
-                printf("la ");
+                det12 = ("La ");
             } else if (random == 1) {
-                printf("une ");
+                det12 = ("Une ");
             } else if (random == 2) {
-                printf("ma ");
+                det12 = ("Ma ");
             } else if (random == 3) {
-                printf("ta ");
+                det12 = ("Ta ");
             } else if (random == 4) {
-                printf("sa ");
+                det12 = ("Sa ");
             } else if (random == 5) {
-                printf("notre ");
+                det12 = ("Notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det12 = ("Votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det12 = ("Leur ");
             } else {
-                printf("DETERMINANT InvGen -> Fem (random = %d", random);
+                det12 = ("DETERMINANT InvGen -> Fem (random = %d");
             }
         }
     }
     else if (name12.Genre == Mas) {
         random = rand() % 8;
         if (random == 0) {
-            printf("le ");
+            det12 = ("Le ");
         } else if (random == 1) {
-            printf("un ");
+            det12 = ("Un ");
         } else if (random == 2) {
-            printf("mon ");
+            det12 = ("Mon ");
         } else if (random == 3) {
-            printf("ton ");
+            det12 = ("Ton ");
         } else if (random == 4) {
-            printf("son ");
+            det12 = ("Son ");
         } else if (random == 5) {
-            printf("notre ");
+            det12 = ("Notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det12 = ("Votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det12 = ("Leur ");
         } else {
-            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+            det12 = ("DETERMINANT InvGen -> Mas (random = %d");
         }
     }
     else if (name12.Genre == Fem) {
         random = rand() % 8;
         if (random == 0) {
-            printf("la ");
+            det12 = ("La ");
         } else if (random == 1) {
-            printf("une ");
+            det12 = ("Une ");
         } else if (random == 2) {
-            printf("ma ");
+            det12 = ("Ma ");
         } else if (random == 3) {
-            printf("ta ");
+            det12 = ("Ta ");
         } else if (random == 4) {
-            printf("sa ");
+            det12 = ("Sa ");
         } else if (random == 5) {
-            printf("notre ");
+            det12 = ("Notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det12 = ("Votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det12 = ("Leur ");
         } else {
-            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+            det12 = ("DETERMINANT InvGen -> Fem (random = %d");
         }
     }
     else {
-        printf("%.1f ", name12.Genre);
+        det12 = ("%.1f ");
     }
-    DisplayWord(bf_name12);
 
-    printf(" | ");
-
-    printf("qui");
-
-    printf(" | ");
 
     t_baseFlechie bf_verb12 = ChooseWordBase(verb);
     p_node pn_verb12 = bf_verb12.p;
@@ -641,17 +1017,60 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             i++;
         }
         k++;
+        if(pn_verb12->toto[i][0] == 0 && ajout == 1 && no == 0){
+            printf("La forme à la troisième personne du ");
+
+            char* nombre;
+            if(name12.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name12.Nombre == PL){
+                printf("pluriel ");
+                nombre = "PL";
+            }
+            char* temps;
+            if(random%3 == 0){
+                printf("au présent de l’indicatif ");
+                temps = "IPre";
+            }else if(random%3 == 1){
+                printf("à l’imparfait de l’indicatif ");
+                temps = "IImp";
+            }else if(random%3 == 2){
+                printf("au présent du subjonctif ");
+                temps = "SPre";
+            }
+
+            printf("du verbe \"");
+            DisplayWord(bf_verb12);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_verb12->toto[i][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tVer:%s+%s+P3",missingFlechie,bf_verb12.word,temps,nombre);
+                fclose(file);
+            }else{
+                no = 1;
+            }
+        }
         if (k > 10) {
             k = 0;
             bf_verb12 = ChooseWordBase(verb);
             pn_verb12 = bf_verb12.p;
+            no = 0;
         }
     } while (pn_verb12->toto[i][0] == 0);
-    //printf(" random = %d;",random);
+
 
     bf_verb12.word = pn_verb12->toto[i];
-    DisplayWord(bf_verb12);
-    printf(" | ");
+
 
     t_baseFlechie bf_verb22 = ChooseWordBase(verb);
     p_node pn_verb22 = bf_verb22.p;
@@ -674,43 +1093,86 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             i++;
         }
         k++;
+        if(pn_verb22->toto[i][0] == 0 && ajout == 1 && no == 0){
+            printf("La forme à la troisième personne du ");
+
+            char* nombre;
+            if(name12.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name12.Nombre == PL){
+                printf("pluriel ");
+                nombre = "PL";
+            }
+            char* temps;
+            if(random%3 == 0){
+                printf("au présent de l’indicatif ");
+                temps = "IPre";
+            }else if(random%3 == 1){
+                printf("à l’imparfait de l’indicatif ");
+                temps = "IImp";
+            }else if(random%3 == 2){
+                printf("au présent du subjonctif ");
+                temps = "SPre";
+            }
+
+            printf("du verbe \"");
+            DisplayWord(bf_verb22);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_verb22->toto[i][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tVer:%s+%s+P3",missingFlechie,bf_verb22.word,temps,nombre);
+                fclose(file);
+            }else{
+                no = 1;
+            }
+        }
         if (k > 10) {
             k = 0;
             bf_verb22 = ChooseWordBase(verb);
             pn_verb22 = bf_verb11.p;
+            no = 0;
         }
     } while (pn_verb22->toto[i][0] == 0);
-    //printf(" random = %d;",random);
+
 
     bf_verb22.word = pn_verb22->toto[i];
-    DisplayWord(bf_verb22);
 
-    printf(" | ");
 
     t_accords name22 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name22;
     bf_name22.word = name22.word;
+    char* det22;
 
     if (name22.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
-            printf("les ");
+            det22 = ("les ");
         } else if (random == 1) {
-            printf("des ");
+            det22 = ("des ");
         } else if (random == 2) {
-            printf("mes ");
+            det22 = ("mes ");
         } else if (random == 3) {
-            printf("tes ");
+            det22 = ("tes ");
         } else if (random == 4) {
-            printf("ses ");
+            det22 = ("ses ");
         } else if (random == 5) {
-            printf("nos ");
+            det22 = ("nos ");
         } else if (random == 6) {
-            printf("vos ");
+            det22 = ("vos ");
         } else if (random == 7) {
-            printf("leurs ");
+            det22 = ("leurs ");
         } else {
-            printf("DETERMINANT PL (random = %d", random);
+            det22 = ("DETERMINANT PL (random = %d");
         }
     }
     else if (name22.Genre == InvGEN) {
@@ -718,110 +1180,155 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
         if (random == 0) {
             random = rand() % 8;
             if (random == 0) {
-                printf("le ");
+                det22 = ("le ");
             } else if (random == 1) {
-                printf("un ");
+                det22 = ("un ");
             } else if (random == 2) {
-                printf("mon ");
+                det22 = ("mon ");
             } else if (random == 3) {
-                printf("ton ");
+                det22 = ("ton ");
             } else if (random == 4) {
-                printf("son ");
+                det22 = ("son ");
             } else if (random == 5) {
-                printf("notre ");
+                det22 = ("notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det22 = ("votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det22 = ("leur ");
             } else {
-                printf("DETERMINANT InvGen -> Mas (random = %d", random);
+                det22 = ("DETERMINANT InvGen -> Mas");
             }
         } else {
             random = rand() % 8;
             if (random == 0) {
-                printf("la ");
+                det22 = ("la ");
             } else if (random == 1) {
-                printf("une ");
+                det22 = ("une ");
             } else if (random == 2) {
-                printf("ma ");
+                det22 = ("ma ");
             } else if (random == 3) {
-                printf("ta ");
+                det22 = ("ta ");
             } else if (random == 4) {
-                printf("sa ");
+                det22 = ("sa ");
             } else if (random == 5) {
-                printf("notre ");
+                det22 = ("notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det22 = ("votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det22 = ("leur ");
             } else {
-                printf("DETERMINANT InvGen -> Fem (random = %d", random);
+                det22 = ("DETERMINANT InvGen -> Fem ");
             }
         }
     }
     else if (name22.Genre == Mas) {
         random = rand() % 8;
         if (random == 0) {
-            printf("le ");
+            det22 = ("le ");
         } else if (random == 1) {
-            printf("un ");
+            det22 = ("un ");
         } else if (random == 2) {
-            printf("mon ");
+            det22 = ("mon ");
         } else if (random == 3) {
-            printf("ton ");
+            det22 = ("ton ");
         } else if (random == 4) {
-            printf("son ");
+            det22 = ("son ");
         } else if (random == 5) {
-            printf("notre ");
+            det22 = ("notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det22 = ("votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det22 = ("leur ");
         } else {
-            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+            det22 = ("DETERMINANT InvGen -> Mas");
         }
     }
     else if (name22.Genre == Fem) {
         random = rand() % 8;
         if (random == 0) {
-            printf("la ");
+            det22 = ("la ");
         } else if (random == 1) {
-            printf("une ");
+            det22 = ("une ");
         } else if (random == 2) {
-            printf("ma ");
+            det22 = ("ma ");
         } else if (random == 3) {
-            printf("ta ");
+            det22 = ("ta ");
         } else if (random == 4) {
-            printf("sa ");
+            det22 = ("sa ");
         } else if (random == 5) {
-            printf("notre ");
+            det22 = ("notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det22 = ("votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det22 = ("leur ");
         } else {
-            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+            det22 = ("DETERMINANT InvGen -> Fem");
         }
-    } else {
-        printf("%.1f ", name22.Genre);
+    }
+    else {
+        det22 = ("%.1f ");
     }
 
-    DisplayWord(bf_name22);
-    //printf("%.1f;%.1f",name22.Genre,name22.Nombre);
-    printf(" | ");
 
     t_baseFlechie bf_adj12;
     p_node pn_adj12;
     do {
         bf_adj12 = ChooseWordBase(adj);
         pn_adj12 = bf_adj12.p;
+
+        if(pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)][0] == 0 && ajout == 1){
+            printf("La forme au ");
+
+            char* genre;
+            if(name22.Genre == Mas){
+                printf("masculin ");
+                genre = "Mas";
+            }else if(name22.Genre == Fem){
+                printf("feminin ");
+                genre = "Fem";
+            }else{
+                printf("invariable en genre ");
+                genre = "InvGen";
+            }
+
+            char* nombre;
+            if(name22.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name22.Nombre == PL){
+                printf("pluriel ");
+                nombre = "PL";
+            }else{
+                printf("invariable en nombre ");
+                nombre = "InvPL";
+            }
+
+
+            printf("de l'adjectif \"");
+            DisplayWord(bf_adj12);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tAdj:%s+%s",missingFlechie,bf_adj12.word,genre,nombre);
+                fclose(file);
+            }
+        }
     } while (pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)][0] == 0);
 
     if(name12.Genre == Fem){
         //printf("%.1f;%.1f ",name12.Genre,name12.Nombre);
     }
     bf_adj12.word = pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)];
-    DisplayWord(bf_adj12);
+
 
 
 
@@ -830,141 +1337,188 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 
 
-
-    printf("\nModèle 3 : ");
     t_accords name13 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name13;
     bf_name13.word = name13.word;
+    char* det13;
 
     if (name13.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
-            printf("les ");
+            det13 = ("Les ");
         } else if (random == 1) {
-            printf("des ");
+            det13 = ("Des ");
         } else if (random == 2) {
-            printf("mes ");
+            det13 = ("Mes ");
         } else if (random == 3) {
-            printf("tes ");
+            det13 = ("Tes ");
         } else if (random == 4) {
-            printf("ses ");
+            det13 = ("Ses ");
         } else if (random == 5) {
-            printf("nos ");
+            det13 = ("Nos ");
         } else if (random == 6) {
-            printf("vos ");
+            det13 = ("Vos ");
         } else if (random == 7) {
-            printf("leurs ");
+            det13 = ("Leurs ");
         } else {
-            printf("DETERMINANT PL (random = %d", random);
+            det13 = ("DETERMINANT PL ");
         }
-    } else if (name13.Genre == InvGEN) {
+    }
+    else if (name13.Genre == InvGEN) {
         random = rand() % 2;
         if (random == 0) {
             random = rand() % 8;
             if (random == 0) {
-                printf("le ");
+                det13 = ("Le ");
             } else if (random == 1) {
-                printf("un ");
+                det13 = ("Un ");
             } else if (random == 2) {
-                printf("mon ");
+                det13 = ("Mon ");
             } else if (random == 3) {
-                printf("ton ");
+                det13 = ("Ton ");
             } else if (random == 4) {
-                printf("son ");
+                det13 = ("Son ");
             } else if (random == 5) {
-                printf("notre ");
+                det13 = ("Notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det13 = ("Votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det13 = ("Leur ");
             } else {
-                printf("DETERMINANT InvGen -> Mas (random = %d", random);
+                det13 = ("DETERMINANT InvGen -> Mas ");
             }
         } else {
             random = rand() % 8;
             if (random == 0) {
-                printf("la ");
+                det13 = ("La ");
             } else if (random == 1) {
-                printf("une ");
+                det13 = ("Une ");
             } else if (random == 2) {
-                printf("ma ");
+                det13 = ("Ma ");
             } else if (random == 3) {
-                printf("ta ");
+                det13 = ("Ta ");
             } else if (random == 4) {
-                printf("sa ");
+                det13 = ("Sa ");
             } else if (random == 5) {
-                printf("notre ");
+                det13 = ("Notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det13 = ("Votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det13 = ("Leur ");
             } else {
-                printf("DETERMINANT InvGen -> Fem (random = %d", random);
+                det13 = ("DETERMINANT InvGen -> Fem ");
             }
         }
-    } else if (name13.Genre == Mas) {
+    }
+    else if (name13.Genre == Mas) {
         random = rand() % 8;
         if (random == 0) {
-            printf("le ");
+            det13 = ("Le ");
         } else if (random == 1) {
-            printf("un ");
+            det13 = ("Un ");
         } else if (random == 2) {
-            printf("mon ");
+            det13 = ("Mon ");
         } else if (random == 3) {
-            printf("ton ");
+            det13 = ("Ton ");
         } else if (random == 4) {
-            printf("son ");
+            det13 = ("Son ");
         } else if (random == 5) {
-            printf("notre ");
+            det13 = ("Notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det13 = ("Votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det13 = ("Leur ");
         } else {
-            printf("DETERMINANT InvGen -> Mas (random = %d", random);
+            det13 = ("DETERMINANT InvGen -> Mas ");
         }
-    } else if (name13.Genre == Fem) {
+    }
+    else if (name13.Genre == Fem) {
         random = rand() % 8;
         if (random == 0) {
-            printf("la ");
+            det13 = ("La ");
         } else if (random == 1) {
-            printf("une ");
+            det13 = ("Une ");
         } else if (random == 2) {
-            printf("ma ");
+            det13 = ("Ma ");
         } else if (random == 3) {
-            printf("ta ");
+            det13 = ("Ta ");
         } else if (random == 4) {
-            printf("sa ");
+            det13 = ("Sa ");
         } else if (random == 5) {
-            printf("notre ");
+            det13 = ("Notre ");
         } else if (random == 6) {
-            printf("votre ");
+            det13 = ("Votre ");
         } else if (random == 7) {
-            printf("leur ");
+            det13 = ("Leur ");
         } else {
-            printf("DETERMINANT InvGen -> Fem (random = %d", random);
+            det13 = ("DETERMINANT InvGen -> Fem ");
         }
-    } else {
-        printf("%.1f ", name13.Genre);
+    }
+    else {
+        det13 = ("%.1f ");
     }
 
-    DisplayWord(bf_name13);
-    //printf("%.1f;%.1f",name13.Genre,name13.Nombre);
-    printf(" | ");
+
 
     t_baseFlechie bf_adj13;
     p_node pn_adj13;
     do {
         bf_adj13 = ChooseWordBase(adj);
         pn_adj13 = bf_adj13.p;
+
+        if(pn_adj12->toto[(int) (name13.Genre + name13.Nombre - 1)][0] == 0 && ajout == 1){
+            printf("La forme au ");
+
+            char* genre;
+            if(name13.Genre == Mas){
+                printf("masculin ");
+                genre = "Mas";
+            }else if(name13.Genre == Fem){
+                printf("feminin ");
+                genre = "Fem";
+            }else{
+                printf("invariable en genre ");
+                genre = "InvGen";
+            }
+
+            char* nombre;
+            if(name13.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name13.Nombre == PL) {
+                printf("pluriel ");
+                nombre = "PL";
+            }else{
+                printf("invariable en nombre ");
+                nombre = "InvPL";
+            }
+
+
+            printf("de l'adjectif \"");
+            DisplayWord(bf_adj13);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_adj13->toto[(int) (name13.Genre + name13.Nombre - 1)][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tAdj:%s+%s",missingFlechie,bf_adj13.word,genre,nombre);
+                fclose(file);
+            }
+        }
     } while (pn_adj13->toto[(int) (name13.Genre + name13.Nombre - 1)][0] == 0);
     if(name13.Genre == Fem){
         //printf("%.1f;%.1f ",name13.Genre,name13.Nombre);
     }
     bf_adj13.word = pn_adj13->toto[(int) (name13.Genre + name13.Nombre - 1)];
 
-    DisplayWord(bf_adj13);
-    printf(" | ");
+
 
 
     t_baseFlechie bf_verb13 = ChooseWordBase(verb);
@@ -988,140 +1542,684 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             i++;
         }
         k++;
+        if(pn_verb13->toto[i][0] == 0 && ajout == 1 && no == 0){
+            printf("La forme à la troisième personne du ");
+
+            char* nombre;
+            if(name13.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name13.Nombre == PL){
+                printf("pluriel ");
+                nombre = "PL";
+            }
+            char* temps;
+            if(random%3 == 0){
+                printf("au présent de l’indicatif ");
+                temps = "IPre";
+            }else if(random%3 == 1){
+                printf("à l’imparfait de l’indicatif ");
+                temps = "IImp";
+            }else if(random%3 == 2){
+                printf("au présent du subjonctif ");
+                temps = "SPre";
+            }
+
+            printf("du verbe \"");
+            DisplayWord(bf_verb13);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_verb13->toto[i][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tVer:%s+%s+P3",missingFlechie,bf_verb13.word,temps,nombre);
+                fclose(file);
+            }else{
+                no = 1;
+            }
+        }
         if (k > 10) {
             k = 0;
             bf_verb13 = ChooseWordBase(verb);
             pn_verb13 = bf_verb13.p;
+            no = 0;
         }
     } while (pn_verb13->toto[i][0] == 0);
     //printf(" random = %d;",random);
 
     bf_verb13.word = pn_verb13->toto[i];
-    DisplayWord(bf_verb13);
-    printf(" | ");
-
-    DisplayWord(ChooseWordBase(adv));
-    printf(" | ");
 
 
     t_accords name23 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name23;
     bf_name23.word = name23.word;
+    char* det23;
 
     if (name23.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
-            printf("les ");
+            det23 = ("les ");
         } else if (random == 1) {
-            printf("des ");
+            det23 = ("des ");
         } else if (random == 2) {
-            printf("mes ");
+            det23 = ("mes ");
         } else if (random == 3) {
-            printf("tes ");
+            det23 = ("tes ");
         } else if (random == 4) {
-            printf("ses ");
+            det23 = ("ses ");
         } else if (random == 5) {
-            printf("nos ");
+            det23 = ("nos ");
         } else if (random == 6) {
-            printf("vos ");
+            det23 = ("vos ");
         } else if (random == 7) {
-            printf("leurs ");
+            det23 = ("leurs ");
         } else {
-            printf("DETERMINANT PL (random = %d", random);
+            det23 = ("DETERMINANT PL");
         }
-    } else if (name23.Genre == InvGEN) {
+    }
+    else if (name23.Genre == InvGEN) {
         random = rand() % 2;
         if (random == 0) {
             random = rand() % 8;
             if (random == 0) {
-                printf("le ");
+                det23 = ("le ");
             } else if (random == 1) {
-                printf("un ");
+                det23 = ("un ");
             } else if (random == 2) {
-                printf("mon ");
+                det23 = ("mon ");
             } else if (random == 3) {
-                printf("ton ");
+                det23 = ("ton ");
             } else if (random == 4) {
-                printf("son ");
+                det23 = ("son ");
             } else if (random == 5) {
-                printf("notre ");
+                det23 = ("notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det23 = ("votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det23 = ("leur ");
             } else {
-                printf("DETERMINANT InvGen -> Mas (random = %d", random);
+                det23 = ("DETERMINANT InvGen -> Mas ");
             }
         } else {
             random = rand() % 8;
             if (random == 0) {
-                printf("la ");
+                det23 = ("la ");
             } else if (random == 1) {
-                printf("une ");
+                det23 = ("une ");
             } else if (random == 2) {
-                printf("ma ");
+                det23 = ("ma ");
             } else if (random == 3) {
-                printf("ta ");
+                det23 = ("ta ");
             } else if (random == 4) {
-                printf("sa ");
+                det23 = ("sa ");
             } else if (random == 5) {
-                printf("notre ");
+                det23 = ("notre ");
             } else if (random == 6) {
-                printf("votre ");
+                det23 = ("votre ");
             } else if (random == 7) {
-                printf("leur ");
+                det23 = ("leur ");
             } else {
-                printf("DETERMINANT InvGen -> Fem (random = %d", random);
+                det23 = ("DETERMINANT InvGen -> Fem ");
             }
         }
-    } else if (name23.Genre == Mas) {
-        random = rand() % 8;
-        if (random == 0) {
-            printf("le ");
-        } else if (random == 1) {
-            printf("un ");
-        } else if (random == 2) {
-            printf("mon ");
-        } else if (random == 3) {
-            printf("ton ");
-        } else if (random == 4) {
-            printf("son ");
-        } else if (random == 5) {
-            printf("notre ");
-        } else if (random == 6) {
-            printf("votre ");
-        } else if (random == 7) {
-            printf("leur ");
-        } else {
-            printf("DETERMINANT InvGen -> Mas (random = %d", random);
-        }
-    } else if (name23.Genre == Fem) {
-        random = rand() % 8;
-        if (random == 0) {
-            printf("la ");
-        } else if (random == 1) {
-            printf("une ");
-        } else if (random == 2) {
-            printf("ma ");
-        } else if (random == 3) {
-            printf("ta ");
-        } else if (random == 4) {
-            printf("sa ");
-        } else if (random == 5) {
-            printf("notre ");
-        } else if (random == 6) {
-            printf("votre ");
-        } else if (random == 7) {
-            printf("leur ");
-        } else {
-            printf("DETERMINANT InvGen -> Fem (random = %d", random);
-        }
-    } else {
-        printf("%.1f ", name23.Genre);
     }
-    DisplayWord(bf_name23);
-    //printf("%.1f;%.1f",name23.Genre,name23.Nombre);
+    else if (name23.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
+            det23 = ("le ");
+        } else if (random == 1) {
+            det23 = ("un ");
+        } else if (random == 2) {
+            det23 = ("mon ");
+        } else if (random == 3) {
+            det23 = ("ton ");
+        } else if (random == 4) {
+            det23 = ("son ");
+        } else if (random == 5) {
+            det23 = ("notre ");
+        } else if (random == 6) {
+            det23 = ("votre ");
+        } else if (random == 7) {
+            det23 = ("leur ");
+        } else {
+            det23 = ("DETERMINANT InvGen -> Mas");
+        }
+    }
+    else if (name23.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
+            det23 = ("la ");
+        } else if (random == 1) {
+            det23 = ("une ");
+        } else if (random == 2) {
+            det23 = ("ma ");
+        } else if (random == 3) {
+            det23 = ("ta ");
+        } else if (random == 4) {
+            det23 = ("sa ");
+        } else if (random == 5) {
+            det23 = ("notre ");
+        } else if (random == 6) {
+            det23 = ("votre ");
+        } else if (random == 7) {
+            det23 = ("leur ");
+        } else {
+            det23 = ("DETERMINANT InvGen -> Fem");
+        }
+    }
+    else {
+        det23 = ("%.1f ");
+    }
+
+
+
+
+    //MODELE 4    PRONOM/VERBE/ADV/NOM/ADJ
+
+
+
+
+    int vNombre = -1;
+    int vPersonne = -1;
+    random = rand()%6;
+    char* pronom14;
+
+    if(random == 0){
+        pronom14 = ("Je");
+        vNombre = vSG;
+        vPersonne = P1;
+    }
+    else if(random == 1){
+        pronom14 = ("Tu");
+        vNombre = vSG;
+        vPersonne = P2;
+    }
+    else if(random == 2){
+        pronom14 = ("Il");
+        vNombre = vSG;
+        vPersonne = P3;
+    }
+    else if(random == 3){
+        pronom14 = ("Nous");
+        vNombre = vPL;
+        vPersonne = P1;
+    }
+    else if(random == 4){
+        pronom14 = ("Vous");
+        vNombre = vPL;
+        vPersonne = P2;
+    }
+    else if(random == 5){
+        pronom14 = ("Ils");
+        vNombre = vPL;
+        vPersonne = P3;
+    }
+
+
+    t_baseFlechie bf_verb14 = ChooseWordBase(verb);
+    p_node pn_verb14 = bf_verb14.p;
+    do {
+        random = vNombre + vPersonne + rand()%3;
+
+        i = 0;
+        while (i < random) {
+            i++;
+        }
+        k++;
+        if(pn_verb14->toto[i][0] == 0 && ajout == 1 && no == 0){
+            printf("La forme à la ");
+            char* personne;
+            if(vPersonne ==  P1){
+                printf("première personne ");
+                personne = "P1";
+            }else if(vPersonne == P2){
+                printf("deuxième personne ");
+                personne = "P2";
+            }else if(vPersonne == P3){
+                printf("troisième personne ");
+                personne = "P3";
+            }
+
+            char* nombre;
+            if(vNombre ==  vSG){
+                printf("du singulier ");
+                nombre = "SG";
+            }else if(vNombre == vPL){
+                printf("du pluriel ");
+                nombre = "PL";
+            }
+
+            char* temps;
+            if(random%3 == 0){
+                printf("au présent de l’indicatif ");
+                temps = "IPre";
+            }else if(random%3 == 1){
+                printf("à l’imparfait de l’indicatif ");
+                temps = "IImp";
+            }else if(random%3 == 2){
+                printf("au présent du subjonctif ");
+                temps = "SPre";
+            }
+
+            printf("du verbe \"");
+            DisplayWord(bf_verb14);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_verb14->toto[i][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tVer:%s+%s+%s",missingFlechie,bf_verb14.word,temps,nombre,personne);
+                fclose(file);
+            }else{
+                no = 1;
+            }
+        }
+        if (k > 10) {
+            k = 0;
+            bf_verb14 = ChooseWordBase(verb);
+            pn_verb14 = bf_verb14.p;
+            no = 0;
+        }
+    } while (pn_verb14->toto[i][0] == 0);
+
+    bf_verb14.word = pn_verb14->toto[i];
+
+
+    t_accords name14 = ChooseWordFlechie(ChooseWordBase(name));
+    t_baseFlechie bf_name14;
+    bf_name14.word = name14.word;
+    char* det14;
+
+    if (name14.Nombre == PL) {
+        random = rand() % 8;
+        if (random == 0) {
+            det14 = ("les ");
+        } else if (random == 1) {
+            det14 = ("des ");
+        } else if (random == 2) {
+            det14 = ("mes ");
+        } else if (random == 3) {
+            det14 = ("tes ");
+        } else if (random == 4) {
+            det14 = ("ses ");
+        } else if (random == 5) {
+            det14 = ("nos ");
+        } else if (random == 6) {
+            det14 = ("vos ");
+        } else if (random == 7) {
+            det14 = ("leurs ");
+        } else {
+            det14 = ("DETERMINANT PL (random = %d");
+        }
+    }
+    else if (name14.Genre == InvGEN) {
+        random = rand() % 2;
+        if (random == 0) {
+            random = rand() % 8;
+            if (random == 0) {
+                det14 = ("le ");
+            } else if (random == 1) {
+                det14 = ("un ");
+            } else if (random == 2) {
+                det14 = ("mon ");
+            } else if (random == 3) {
+                det14 = ("ton ");
+            } else if (random == 4) {
+                det14 = ("son ");
+            } else if (random == 5) {
+                det14 = ("notre ");
+            } else if (random == 6) {
+                det14 = ("votre ");
+            } else if (random == 7) {
+                det14 = ("leur ");
+            } else {
+                det14 = ("DETERMINANT InvGen -> Mas");
+            }
+        } else {
+            random = rand() % 8;
+            if (random == 0) {
+                det14 = ("la ");
+            } else if (random == 1) {
+                det14 = ("une ");
+            } else if (random == 2) {
+                det14 = ("ma ");
+            } else if (random == 3) {
+                det14 = ("ta ");
+            } else if (random == 4) {
+                det14 = ("sa ");
+            } else if (random == 5) {
+                det14 = ("notre ");
+            } else if (random == 6) {
+                det14 = ("votre ");
+            } else if (random == 7) {
+                det14 = ("leur ");
+            } else {
+                det14 = ("DETERMINANT InvGen -> Fem ");
+            }
+        }
+    }
+    else if (name14.Genre == Mas) {
+        random = rand() % 8;
+        if (random == 0) {
+            det14 = ("le ");
+        } else if (random == 1) {
+            det14 = ("un ");
+        } else if (random == 2) {
+            det14 = ("mon ");
+        } else if (random == 3) {
+            det14 = ("ton ");
+        } else if (random == 4) {
+            det14 = ("son ");
+        } else if (random == 5) {
+            det14 = ("notre ");
+        } else if (random == 6) {
+            det14 = ("votre ");
+        } else if (random == 7) {
+            det14 = ("leur ");
+        } else {
+            det14 = ("DETERMINANT InvGen -> Mas ");
+        }
+    }
+    else if (name14.Genre == Fem) {
+        random = rand() % 8;
+        if (random == 0) {
+            det14 = ("la ");
+        } else if (random == 1) {
+            det14 = ("une ");
+        } else if (random == 2) {
+            det14 = ("ma ");
+        } else if (random == 3) {
+            det14 = ("ta ");
+        } else if (random == 4) {
+            det14 = ("sa ");
+        } else if (random == 5) {
+            det14 = ("notre ");
+        } else if (random == 6) {
+            det14 = ("votre ");
+        } else if (random == 7) {
+            det14 = ("leur ");
+        } else {
+            det14 = ("DETERMINANT InvGen -> Fem");
+        }
+    }
+    else {
+        det14 = ("%.1f ");
+    }
+
+
+    t_baseFlechie bf_adj14;
+    p_node pn_adj14;
+    do {
+        bf_adj14 = ChooseWordBase(adj);
+        pn_adj14 = bf_adj14.p;
+
+        if(pn_adj12->toto[(int) (name14.Genre + name14.Nombre - 1)][0] == 0 && ajout == 1){
+            printf("La forme au ");
+
+            char* genre;
+            if(name14.Genre == Mas){
+                printf("masculin ");
+                genre = "Mas";
+            }else if(name14.Genre == Fem){
+                printf("feminin ");
+                genre = "Fem";
+            }else{
+                printf("invariable en genre ");
+                genre = "InvGen";
+            }
+
+            char* nombre;
+            if(name14.Nombre == SG){
+                printf("singulier ");
+                nombre = "SG";
+            }else if(name14.Nombre == PL){
+                printf("pluriel ");
+                nombre = "PL";
+            }else{
+                printf("invariable en nombre ");
+                nombre = "InvPL";
+            }
+
+
+            printf("de l'adjectif \"");
+            DisplayWord(bf_adj14);
+            printf("\" est inconue dans le dictionaire.\nShouaitez vous l'ajouter ?\n");
+            char ans[10];
+            char missingFlechie[50];
+            fgets(ans,9, stdin);
+            if(ans[0] == 'O' || ans[0] == 'o' || ans[0] == 'Y' || ans[0] == 'y' || ans[0] == '1'){
+                FILE* file = fopen("dictionnaire.txt", "a");
+                printf("Entrez la forme manquante :");
+                fgets(missingFlechie,49, stdin);
+                for (int j = 0; j < strlen(missingFlechie)-1; ++j) {
+                    pn_adj14->toto[(int) (name14.Genre + name14.Nombre - 1)][j] = missingFlechie[j];
+                }
+                missingFlechie[strlen(missingFlechie)-1] = '\0';
+                fprintf(file,"\n%s\t%s\tAdj:%s+%s",missingFlechie,bf_adj14.word,genre,nombre);
+                fclose(file);
+            }
+        }
+    } while (pn_adj14->toto[(int) (name14.Genre + name14.Nombre - 1)][0] == 0);
+    if(name14.Genre == Fem){
+        //printf("%.1f;%.1f ",name14.Genre,name14.Nombre);
+    }
+    bf_adj14.word = pn_adj14->toto[(int) (name14.Genre + name14.Nombre - 1)];
+
+    printf("\n\nModèle 1 : %s ",det11);
+    DisplayWord(bf_name11);
+    printf(" | ");
+    DisplayWord(bf_adj11);
+    printf(" | ");
+    DisplayWord(bf_verb11);
+    printf(" | ");
+    printf("%s ",det21);
+    DisplayWord(bf_name21);
     printf("\n");
+
+    printf("Modèle 2 : %s ",det12);
+    DisplayWord(bf_name12);
+    printf(" | qui | ");
+    DisplayWord(bf_verb12);
+    printf(" | ");
+    DisplayWord(bf_verb22);
+    printf(" | ");
+    printf("%s ",det22);
+    DisplayWord(bf_name22);
+    printf(" | ");
+    DisplayWord(bf_adj12);
+    printf("\n");
+
+    printf("Modèle 3 : %s ",det13);
+    DisplayWord(bf_name13);
+    printf(" | ");
+    DisplayWord(bf_adj13);
+    printf(" | ");
+    DisplayWord(bf_verb13);
+    printf(" | ");
+    DisplayWord(ChooseWordBase(adv));
+    printf(" | ");
+    printf("%s ",det23);
+    DisplayWord(bf_name23);
+    printf("\n");
+
+    printf("Modèle 4 : %s ",pronom14);
+    DisplayWord(bf_verb14);
+    printf(" | ");
+    DisplayWord(ChooseWordBase(adv));
+    printf(" | ");
+    printf("%s ",det14);
+    DisplayWord(bf_name14);
+    printf(" | ");
+    DisplayWord(bf_adj14);
+    printf("\n");
+
+
+}
+
+int Count_flechies(p_node pn, int row){
+    if(pn == NULL){
+        return 0;
+    }else if(pn->toto != NULL){
+        int k = 0;
+        for (int i = 0; i < row; ++i) {
+            if(pn->toto[i][0] != 0){
+                k++;
+            }
+        }
+        return k + Count_flechies(pn->kid, row) + Count_flechies(pn->siblings, row);
+    }else{
+        return Count_flechies(pn->kid,row) + Count_flechies(pn->siblings, row);
+    }
+}
+
+void PrintFlechies(p_node pn, int row, int cpt){
+    if(pn != NULL) {
+        if (pn->toto != NULL) {
+            int j = 0;
+            for (int i = 0; i < row; ++i) {
+                if (pn->toto[i][0] != 0) {
+                    printf("%d : ",cpt++);
+                    while (pn->toto[i][j] != 0) {
+                        printf("%c", pn->toto[i][j]);
+                        j++;
+                    }
+                    j = 0;
+                    printf("\n");
+                }
+            }
+        }
+        PrintFlechies(pn->kid, row, cpt);
+        PrintFlechies(pn->siblings, row, cpt + Count_flechies(pn->kid, row));
+    }
+}
+
+char* rechercheNiemeFlechie(p_node pn, int row, int n) {
+    if (pn != NULL) {
+        char* word = calloc(50, sizeof(char));
+        if (pn->toto != NULL) {
+            int j = 0;
+            for (int i = 0; i < row; ++i) {
+                if (pn->toto[i][0] != 0) {
+                    while (pn->toto[i][j] != 0) {
+                        word[j] = pn->toto[i][j];
+                        j++;
+                    }
+                    n--;
+                    if(n == 0){
+                        break;
+                    }
+                }
+            }
+        }
+        if (n == 0){
+            return word;
+        }else{
+            if(rechercheNiemeFlechie(pn->kid, row, n) != NULL && rechercheNiemeFlechie(pn->kid, row, n)[0] != 0){
+                return rechercheNiemeFlechie(pn->kid, row, n);
+            }else{
+                return rechercheNiemeFlechie(pn->siblings, row, n - Count_flechies(pn->kid, row));
+            }
+        }
+    }else{
+        return NULL;
+    }
+}
+
+// passer en p_node
+void AutoCompletion(t_tree NOM,t_tree VER,t_tree ADJ,t_tree ADV){
+    char nature[15];
+    t_tree ActualTree;
+    int row;
+
+    printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names\n");
+    fgets(nature,14, stdin);
+
+    /* while(Verif_character(&nature)==0){
+         printf("Wrong input");
+         printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
+         scanf("%c", &nature);
+     }
+     while(Verif_Genre(&nature)!=0){
+         printf("Wrong input");
+         printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
+         scanf("%c", &nature);
+     }*/
+
+    if (nature[0] == 'n' && nature[1] == 'a' && nature[2] == 'm' && nature[3] == 'e' && nature[4] == 's') {
+        ActualTree = NOM;
+        row = 9;
+    }
+    if (nature[0] == 'v' && nature[1] == 'e' && nature[2] == 'r' && nature[3] == 'b' && nature[4] == 'e' && nature[5] == 's') {
+        ActualTree = VER;
+        row = 19;
+    }
+    if (nature[0] == 'a' && nature[1] == 'd' && nature[2] == 'j' && nature[3] == 'e' && nature[4] == 'c' && nature[5] == 't' && nature[6] == 'i' && nature[7] == 'v' && nature[8] == 'e' && nature[9] == 's') {
+        ActualTree = ADJ;
+        row = 10;
+    }
+    if (nature[0] == 'a' && nature[1] == 'd' && nature[2] == 'v' && nature[3] == 'e' && nature[4] == 'r' && nature[5] == 'b' && nature[6] == 's') {
+        ActualTree = ADV;
+        row = 1;
+    }
+
+    p_node pn = ActualTree.root;
+    char word[50];
+    char useless;
+    int i  = 0;
+
+    if (pn->lettre == '0') {
+        pn = pn->kid;
+    }
+
+    printf("Rentrez les lettres de votre mot une par une.\n");
+    while(Count_flechies(pn,row) > 10) {
+        word[i] = fgetc(stdin);
+        useless = fgetc(stdin);
+
+        while (pn->lettre != word[i]) {
+            if (pn->siblings != NULL) {
+                pn = pn->siblings;
+            }else{
+                printf("Mot non trouvé");
+                break;
+            }
+        }
+        if (pn->kid != NULL) {
+            pn = pn->kid;
+        }
+        i++;
+    }
+    int k = 0;
+
+    PrintFlechies(pn,row,1);
+
+    int n;
+    do{
+        printf("Choissez le numéro du mot souhaité (entre 1 et %d)\n", Count_flechies(pn,row));
+        scanf("%d",&n);
+    }while(n <= 0 && n > Count_flechies(pn,row));
+
+    t_baseFlechie bf;
+
+    char* chosenword = rechercheNiemeFlechie(pn, row, n);
+    bf.word= chosenword;
+    DisplayWord(bf);
+
+
 }
 
 p_node recherche(t_tree t,char* mot,char* filename){
@@ -1241,18 +2339,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         int k;
         do {
             ActualChar = fgetc(file); // On lit le caractère
-            /*k++;
-            int d = ftell(file);
-            if(d > 600000){
 
-                printf("%c", ActualChar);
-            }
-            if(k>7) {
-                printf("%d\n", k);
-
-                printf("%d\n", d);
-                break;
-            }*/
         } while (ActualChar != ':');
 
         ActualChar = fgetc(file);
@@ -1505,6 +2592,9 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
                 //printf("%c",name[i]);
                 i++;
             } while (name[i - 1] != '\t');
+
+
+
             i = 0;
             while (name[i] != '\t') {
                 if (Inf == 1) {
@@ -1516,6 +2606,9 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
                 }
                 i++;
             }
+
+
+
             fseek(file, last, SEEK_SET);
             ActualChar = fgetc(file);
         }
@@ -1563,7 +2656,6 @@ t_tree createTree_any(t_tree t, char* filename){
     char name[1000];
     char useless[1000];
     char ActualChar;
-    int e = 0;
 
     if(file != NULL) {
         while (fgetc(file) != EOF) {
@@ -1641,7 +2733,7 @@ t_tree createTree_any(t_tree t, char* filename){
         return t;
     }
     else{
-        printf("Impossible d'ouvrir le dico %c.txt",&filename);
+        //printf("Impossible d'ouvrir le dico %c.txt",&filename);
         return t;
     }
 }
@@ -1652,11 +2744,12 @@ void createFiles(){
     FILE* verbs = fopen("verbs.txt", "w+");
     FILE* adverbs = fopen("adverbs.txt", "w+");
     FILE* adjectives = fopen("adjectives.txt", "w+");
+
     char ligne[1000];
     char ActualChar;
     char a, b;
     if (dico != NULL && names != NULL && verbs != NULL && adverbs != NULL && adjectives != NULL) {
-        while(fgetc(dico) != EOF) {
+        while(fgetc(dico) != EOF){
             fseek(dico,-1, SEEK_CUR);
             // Boucle de lecture des caractères un à un
             int pos = ftell(dico);
@@ -1670,7 +2763,7 @@ void createFiles(){
                 fseek(dico, pos, SEEK_SET);
                 fgets(ligne, 1000, dico);
                 int i = 0;
-                while (ligne[i] != '\n') {
+                while (ligne[i] != '\n' && ligne[i] != 0){
                     fputc(ligne[i], names);
                     i++;
                 }
@@ -1679,7 +2772,7 @@ void createFiles(){
                 fseek(dico, pos, SEEK_SET);
                 fgets(ligne, 1000, dico);
                 int i = 0;
-                while (ligne[i] != '\n') {
+                while (ligne[i] != '\n' && ligne[i] != 0){
                     fputc(ligne[i], verbs);
                     i++;
                 }
@@ -1691,7 +2784,7 @@ void createFiles(){
                         fseek(dico, pos, SEEK_SET);
                         fgets(ligne, 1000, dico);
                         int i = 0;
-                        while (ligne[i] != '\n') {
+                        while (ligne[i] != '\n' && ligne[i] != 0){
                             fputc(ligne[i], adverbs);
                             i++;
                         }
@@ -1700,7 +2793,7 @@ void createFiles(){
                         fseek(dico, pos, SEEK_SET);
                         fgets(ligne, 1000, dico);
                         int i = 0;
-                        while (ligne[i] != '\n') {
+                        while (ligne[i] != '\n' && ligne[i] != 0){
                             fputc(ligne[i], adjectives);
                             i++;
                         }

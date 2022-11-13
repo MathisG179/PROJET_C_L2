@@ -7,13 +7,16 @@ int main() {
     int start = time(0);
     printf("\n-------------%ld-------------\n",time(0)-start);
     srand(time(NULL));
+
     FILE* f;
-    t_tree NOM = createTree('0');
+
     createFiles();
-    NOM = createTree_any(NOM, "names");
 
     t_tree VER = createTree('0');
     VER = createTree_any(VER, "verbs");
+
+    t_tree NOM = createTree('0');
+    NOM = createTree_any(NOM, "names");
 
     t_tree ADV = createTree('0');
     ADV = createTree_any(ADV, "adverbs");
@@ -21,21 +24,30 @@ int main() {
     t_tree ADJ = createTree('0');
     ADJ = createTree_any(ADJ, "adjectives");
 
-    /*for (int i = 0; i < 10; ++i) {
-        WriteSentenceBase(NOM,ADJ,ADV,VER);
-        printf("\n");
-    }*/
-    //p_node a = recherche(NOM, "pietàs", "names");
-    //t_baseFlechie bf;
-    //t_accords a;
-
+    int cpt = 1;
+    char add[10];
     printf("\n-------------%ld-------------\n",time(0)-start);
-    for (int i = 0; i < 10; ++i) {
+    /*
+    for (int i = 0; i < cpt; ++i) {
         WriteSentenceFlechie(NOM,ADJ, ADV, VER);
+        printf("\nSouhaitez vous découvir de nouvelles phrases ?\n");
+        fgets(add,9, stdin);
+        if(add[0] == 'O' || add[0] == 'o' || add[0] == 'Y' || add[0] == 'y' || add[0] == '1'){
+            cpt += 1;
+        }
         printf("\n");
+    }
+     */
+    for (int i = 0; i < cpt; ++i) {
+        AutoCompletion(NOM, VER, ADJ, ADV);
+        printf("\nSouhaitez chercher d'autres mots avec la,completion automatique ?\n");
+        fgets(add, 9, stdin);
+        if (add[0] == 'O' || add[0] == 'o' || add[0] == 'Y' || add[0] == 'y' || add[0] == '1') {
+            cpt += 1;
+        }
     }
     printf("\n-------------%ld-------------\n",time(0)-start);
     int k = 1;
-    //printTree(t.root);
+
     return 0;
 }
