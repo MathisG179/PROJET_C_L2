@@ -21,7 +21,7 @@ void insertFlechies(p_node, char*, int, int);
 t_baseFlechie ChooseWordBase(t_tree t);
 t_accords ChooseWordFlechie(t_baseFlechie);
 
-int CountSiblings(t_tree t, p_node p);
+int CountSiblings(p_node p);
 void DisplayWord(t_baseFlechie bf);
 p_node verif_kid(p_node pn,int row, char* mot);
 p_node recherche(t_tree t,char* mot,char* filename);
@@ -31,8 +31,9 @@ void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb);
 int Verif_character(char *input);
 int Verif_Genre(char *input);
 int Count_flechies(p_node, int);
-void AutoCompletion(t_tree,t_tree,t_tree,t_tree);
+t_baseFlechie AutoCompletion(t_tree,t_tree,t_tree,t_tree);
 void PrintFlechies(p_node,int, int);
 char* rechercheNiemeFlechie(p_node, int, int);
+void freeTree(p_node, int);
 
 #endif //PROJET_C_L2_TREE_H
