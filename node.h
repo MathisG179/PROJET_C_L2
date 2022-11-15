@@ -15,7 +15,6 @@ typedef  struct s_node
 typedef struct s_baseFlechie{
     char* word;
     p_node p;
-    //int random;
 }t_baseFlechie;
 
 typedef struct s_accords{

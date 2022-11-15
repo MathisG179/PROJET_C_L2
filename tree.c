@@ -16,10 +16,45 @@ const int P1 = 0;
 const int P2 = 3;
 const int P3 = 6;
 
+/** It allows to display the right menu depending on where we are.
+ * @param menu We give the right menu to the function, so it can display it
+ * @return the choice of the user to allow him to go to a different menu.
+ */
+int Menu(char *menu){
+    int choice;
+    printf("%s\n", menu);
+    printf("Enter your choice:\n");
+    scanf("%d", &choice);
+    printf("\n");
+    return choice;
+}
 
-void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb) {
-    char* motrecherche;
-    char* nature;
+/** We verify the input given by the user.
+ * @param input The number entered by the user.
+ * @param lim1 The lowest input possible.
+ * @param lim2 The highest input possible.
+ * @return the correct input.
+ */
+int Verify_input(int input, int lim1, int lim2){
+    int new_input=0;
+    while(input <lim1 || input >lim2){
+        printf("Wrong input !\nEnter a new input:\n");
+        scanf("%d",&new_input);
+        input = new_input;
+    }
+    return input;
+}
+
+/**Permet d'afficher le genre et le nombre d'un mot recherché.
+ * La fonction est appelée dans le main
+ * @param nom : l'arbre contenant toutes les formes de base des noms
+ * @param adv : l'arbre contenant toutes les formes de base des adverbes
+ * @param adj :l'arbre contenant toutes les formes de base des adjectifs
+ * @param verb :l'arbre contenant toutes les formes de base des verbes
+ * @param motrecherche : Le mot dont on recherche le genre et le nombre, le temps et la personne pour les verbe
+ * @param nature : Nature du mot : adverbe, adjectif,nom ou adverbe
+ */
+void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb,char*motrecherche,char*nature) {
     p_node tmp;
     char *nature2;
     char *genre;
@@ -27,54 +62,59 @@ void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb) {
     char *nombre;
     int cpt=0;
     int j=0;
-    char ** tab_type = (char**)malloc(20 * sizeof(char*));
-    int *idx = (int*)malloc(20*sizeof(int));
-    char **type = (char**)malloc(50 * sizeof(char*));
-    printf("Quel est le mot recherché au masculin singulier");
-    scanf("%c", &motrecherche);
-    while(Verif_character(motrecherche)==0){
-        printf("Wrong input");
-        printf("Quel est le mot recherché au masculin singulier ?");
-        scanf("%c", &motrecherche);
+
+    char ** tab_type = calloc(20, sizeof(char*));
+    if(tab_type == NULL){
+        exit(EXIT_FAILURE);
     }
-    printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
-    scanf("%c", &nature);
-    while(Verif_character(&nature)==0){
-        printf("Wrong input");
-        printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
-        scanf("%c", &nature);
+
+    int *idx = calloc(20, sizeof(int));
+    if(idx == NULL){
+        exit(EXIT_FAILURE);
     }
-    while(Verif_Genre(&nature)!=0){
-        printf("Wrong input");
-        printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names");
-        scanf("%c", &nature);
+
+    char **type = calloc(50, sizeof(char*));
+    if(type == NULL){
+        exit(EXIT_FAILURE);
     }
-    if (nature == "names") {
+
+    if ((strcmp(nature, "names\n") ==0)) {  //Nous prenons la nature du mot qui  est recherche
         nature2 = "NOM";
         tmp = recherche(nom, motrecherche, "names");
     }
-    if (nature == "verbs") {
+    if ((strcmp(nature, "verbs\n") ==0)) {
         nature2 = "VERB";
         tmp = recherche(verb, motrecherche, "verbs");
     }
-    if (nature == "adjectives") {
+    if ((strcmp(nature, "adjectives\n") ==0)) {
         nature2 = "ADJ";
         tmp = recherche(adj, motrecherche, "adjectives");
     }
-    if (nature == "adverbs") {
+    if ((strcmp(nature, "adverbs\n") ==0)) {
         nature2 = "ADV";
         tmp = recherche(adv, motrecherche, "adverbs");
     }
     if (tmp == NULL) {
-        printf("Le mot n'est dans le dico");
+        printf("Le mot n'est pas dans le dictionnaire\n");
     } else {
-        if (nature == "adverbs") {
-            printf("%s  %s  ADV\nLa forme fléchie des adverbes est leur forme de base.", motrecherche, tmp->toto[0]);
+        if ((strcmp(nature, "adverbs\n") ==0)) {
+            motrecherche[strlen(motrecherche) - 1] = '\0';
+            printf("%s  %s  ADV\nLa forme fléchie des adverbes est leur forme de base.\n", motrecherche, tmp->toto[0]);
         }
-        if (nature == "adjectives") {
+        if ((strcmp(nature, "adjectives\n") ==0)) {
 
-            while (tmp->toto[i] != motrecherche) {  //Trouver la forme fléchie du mot correspondant
-                i++;
+            //Trouver la forme fléchie du mot correspondant
+            for (int k = 0; k < 10; k++) {
+                int l = 0;
+
+                while (tmp->toto[k][l] != 0){
+                    if (motrecherche[l] == tmp->toto[k][l]){
+                        if(tmp->toto[k][l+1] == 0 && motrecherche[l+1] == '\n'){
+                            i = k;
+                        }
+                    }
+                    l++;
+                }
             }
 
             // Trouver le genre et le nombre de l'adjectif
@@ -118,13 +158,31 @@ void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb) {
                 genre = "Card"; // pour les nombres
                 nombre=" ";
             }
-            printf("%s   %s   %s : %s+%s\n%s est un adjectif, accordé au %s  %s , et dont la forme de base est %s", motrecherche,
-                   tmp->toto[0], nature2, genre, nombre, motrecherche, genre, nombre, tmp->toto[0]);
+            int m = 0;
+            for (m = 0; m < 10; m++) {
+                if(tmp->toto[m][0] != 0){
+                    break;
+                }
+            }
+            motrecherche[strlen(motrecherche) - 1] = '\0';
+            printf("%s   %s   %s : %s+%s\n%s est un adjectif, accordé au %s  %s , et dont la forme de base est %s\n", motrecherche,
+                   tmp->toto[m], nature2, genre, nombre, motrecherche, genre, nombre, tmp->toto[m]);
         }
-        if (nature == "names") {
+        if ((strcmp(nature, "names\n") ==0)) {
 
-            while (tmp->toto[i] != motrecherche) {  //Trouver la forme fléchie du mot correspondant
-                i++;
+            //Trouver la forme fléchie du mot correspondant
+
+            for (int k = 0; k < 9; k++) {
+                int l = 0;
+
+                while (tmp->toto[k][l] != 0){
+                    if (motrecherche[l] == tmp->toto[k][l]){
+                        if(tmp->toto[k][l+1] == 0  && motrecherche[l+1] == '\n'){
+                            i = k;
+                        }
+                    }
+                    l++;
+                }
             }
 
             // Trouver le genre et le nombre du mot
@@ -164,20 +222,38 @@ void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb) {
                 genre = "InvGen";
                 nombre = "InvPl";
             }
-            printf("%s   %s   %s : %s+%s\n%s est un Nom %s qui est %s de la forme de base %s", motrecherche,
-                   tmp->toto[0], nature2, genre, nombre, motrecherche, genre, nombre, tmp->toto[0]);
-        }
-        if (nature == "verbs") {
-            for (int i=0;i<=18;i++){  // On cherche l'index de notre mot
-                if(tmp->toto[i]==motrecherche){
-                    idx[j]=i;
-                    j++;
+
+            int m = 0;
+            for (m = 0; m < 9; m++) {
+                if(tmp->toto[m][0] != 0){
+                    break;
                 }
             }
-            idx[j+1]=-1;  // Pour marquer la fin du tableau
-            while(idx[cpt]!=-1){  // On cherche toutes les formes du mot qui correspond au mot recherché
+            motrecherche[strlen(motrecherche) - 1] = '\0';
+            printf("%s   %s   %s : %s+%s\n%s est un Nom %s %s qui a comme forme de base %s\n", motrecherche,
+                   tmp->toto[m], nature2, genre, nombre, motrecherche, genre, nombre, tmp->toto[m]);
+        }
+        if ((strcmp(nature, "verbs\n") ==0)) { //Si on cherche un mot de nature verbe
+
+            // On cherche l'index de notre mot
+            for (int k = 0; k < 19; k++) {
+                int l = 0;
+                while (tmp->toto[k][l] != 0){
+                    if (motrecherche[l] == tmp->toto[k][l]){
+                        if(tmp->toto[k][l+1] == 0  && motrecherche[l+1] == '\n'){
+                            idx[j] = k;
+                            j++;
+                        }
+                    }
+                    l++;
+                }
+            }
+
+
+            idx[j+1]=-1;  //Pour marquer la fin du tableau et
+            //while(idx[cpt]!=-1){  // On cherche toutes les formes du mot qui correspond au mot recherché
                 if(idx[cpt] == 0) {
-                    tab_type[cpt] = "IPre + SG + P1";
+                    tab_type[cpt] = "IPre + SG + P1"; //On ajoute le temps, le nombre et la personne d'un verbe dans un tableau de char
                     type[cpt] = "Indicatif Présent, singulier, première personne";
                     cpt++;
                 }
@@ -254,34 +330,80 @@ void Affichage(t_tree nom, t_tree adv, t_tree adj, t_tree verb) {
                     type[cpt] = "Infinitif";
                     cpt++;
                 }
-            }
-            tab_type[cpt+1]=" ";
-            type[cpt+1]=" ";
+            //}
+
+            //tab_type[cpt+1] = " ";
+            type[cpt+1] = " ";
+            motrecherche[strlen(motrecherche) - 1] = '\0';
             printf("%s   %s  Ver : ",motrecherche,tmp->toto[18]);
             i=0;
-            while(tab_type[i]!=" "){
+            while(tab_type[i] != NULL && tab_type[i][0] != 0){
                 printf("%s",tab_type[i]);
-                if (tab_type[i+1]!=" "){
-                    printf("+");
+                if (tab_type[i+1] != NULL && tab_type[i+1][0] != 0){
+                    printf(" + ");
                 }
+                i++;
             }
+
             printf("\n%s  est un verbe conjugué, dont sa forme de base est %s , la forme conjuguée correspond à\n",motrecherche,tmp->toto[18]);
-            while(tab_type[cpt]!=" "){
-                printf("%s : %s\n",tab_type[cpt],type[cpt]);
+            i = 0;
+            while(tab_type[i] != NULL && tab_type[i][0] != 0){
+                printf("%s : %s\n",tab_type[i],type[i]);
+                i++;
             }
 
         }
     }
-
-    free(tab_type);
-    free(idx);
-    free(type);
 }
 
+
+/** Verify if the input is one of the 4 nature (adjectives / adverbs/ verbs or names.
+ * The function is called in Affichage.
+ * @param nature : input of the user.
+ * @return the verified input.
+ */
+char* Nature(char* nature){
+    printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names\n");
+    char natuure[20];
+    fgets(nature,49, stdin);
+
+
+    //scanf("%s",nature);
+    while(Verif_character(nature) ==0 || Verif_Genre(nature) != 0){
+        printf("Wrong input\n");
+        printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names\n");
+        fgets(nature,49, stdin);
+
+    }
+    return nature;
+}
+
+/** Verify is the word entered by the user contains numbers.
+ * The function is called in Affichage.
+ * @param motrecherche : word the user wants to find.
+ * @return the verified word.
+ */
+char* Mot_recherche(char* motrecherche){
+    printf("Quel est le mot recherché ?\n");
+    fgets(motrecherche,50, stdin);
+
+    while(Verif_character(motrecherche)==0){
+        printf("Wrong input\n");
+        printf("Quel est le mot recherché ?\n");
+        fgets(motrecherche,50, stdin);
+    }
+    return motrecherche;
+}
+
+/** It verifies if the given word contains numbers or not.
+ * The function is called in Verif_mot.
+ * @param input A given word.
+ * @return 0 if the word contains a number. 1 if the word is correct.
+ */
 int Verif_character(char *input){
     int i=0;
-    int stop = 0;
-    while(stop != 1 || input[i]=='\0' || input[i]!='\n'){ // last character of a string
+    int stop = 1;
+    while(stop != 0 && (input[i]=='\0' || input[i]!='\n')){ // last character of a string
         if(input[i]<'a' || input[i]>'z'){ // verify if there is a number in the word
             stop = 0;
         }
@@ -293,8 +415,13 @@ int Verif_character(char *input){
     return stop;
 }
 
-int Verif_Genre(char* input){
-    if (strcmp(input,"adjectives\n") != 0 && strcmp(input,"adverbs\n") != 0 && strcmp(input,"verbs\n") != 0 && strcmp(input,"names\n") != 0){
+/** Verifies if the word is one of the 4 categories (adjectives, adverbs, names, verbs)
+ * The function is called in Verif_Nature.
+ * @param input a given nature.
+ * @return -1 if it's not in the 4 categories. 0 if it's correct
+ */
+int Verif_Genre(char *input){
+    if ((strcmp(input, "verbs\n") != 0) && (strcmp(input, "adverbs\n") != 0) && (strcmp(input, "names\n") != 0) && (strcmp(input, "adjectives\n") != 0)){
         return -1;
     }
     else{
@@ -302,7 +429,11 @@ int Verif_Genre(char* input){
     }
 }
 
-/** Fonction permetant de choisir une forme de base aléatoire pour un mot. Fonction appelée dans WriteSenteceFlechie(), ChooseWordFlechie()*/
+/** Fonction permetant de choisir une forme de base aléatoire pour un mot.
+ * Fonction appelée dans WriteSenteceFlechie(), ChooseWordFlechie()
+ * @param t : L'arbre qui contient les formes de base.
+ * @return : elle retourne bf afin d'avoir la node et le mot qu'on a généré automatiquement
+ */
 t_baseFlechie ChooseWordBase(t_tree t) {
     p_node tmp;
 
@@ -310,6 +441,9 @@ t_baseFlechie ChooseWordBase(t_tree t) {
 
     int cpt = 0, random = 0, i = 0, choice, stop;
     bf.word = (char *)calloc(50,sizeof(char));
+    if(bf.word == NULL){
+        exit(EXIT_FAILURE);
+    }
     tmp = t.root->kid;
     int SiblingsCount = CountSiblings(tmp);
     if(SiblingsCount != 0){
@@ -374,12 +508,20 @@ t_baseFlechie ChooseWordBase(t_tree t) {
     }
 
     bf.word = (char *) realloc(bf.word, i * sizeof(char));
+    if(bf.word == NULL){
+        exit(EXIT_FAILURE);
+    }
     bf.p = tmp;
     return bf;
     free(bf.word);
 }
 
-/** Fonction permetant d'écrire des phrases avec les formes de base des mots (quatres modèles différents)*/
+/** Fonction permetant d'écrire des phrases avec les formes de base des mots (trois modèles différents)
+ * @param name
+ * @param adj
+ * @param adv
+ * @param verb
+ */
 void WriteSentenceBase(t_tree name,t_tree adj, t_tree adv, t_tree verb){
 
     //Modèle 1   nom-adjectif-verbe-nom
@@ -424,11 +566,17 @@ void WriteSentenceBase(t_tree name,t_tree adj, t_tree adv, t_tree verb){
 
 }
 
-/** Fonction permetant de choisir une forme fléchie aléatoire pour un nom. Fonction appelée dans WriteSenteceFlechie()*/
+/** Fonction permetant de choisir une forme fléchie aléatoire pour un nom.
+ * Fonction appelée dans WriteSenteceFlechie()
+ * @param bf
+ * @return Structure t_accords contenant une forme fléchie d'un nom, son genre et son nombre
+ */
 t_accords ChooseWordFlechie(t_baseFlechie bf){
     t_accords a;
     p_node pn = bf.p;
     int i;
+
+    //choisi aleatoirement un genre et un nombre pour le nom
     do {
         int random = rand() % 9;
         i = 0;
@@ -475,13 +623,19 @@ t_accords ChooseWordFlechie(t_baseFlechie bf){
 
 }
 
-/** Fonction permetant d'écrire des phrases gramaticalement correctes (quatres modèles différents)*/
+/** Fonction permetant d'écrire des phrases gramaticalement correctes (quatres modèles différents)
+ * @param name
+ * @param adj
+ * @param adv
+ * @param verb
+ */
 void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
     int random;
     int i, k = 0, ajout = 0, no = 0;
     char add[10];
     printf("Il se peut que certaines formes fléchies soient manquantes, souhaitez vous les ajouter au dictionnaire ?\n");
+
 
     fgets(add,9, stdin);
 
@@ -496,12 +650,14 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 
 
-
+    //Choix d'un nom aléatoire
     t_accords name11 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name11;
     bf_name11.word = name11.word;
-    char* det11;
 
+
+    //choix d'un determinant accordé avec
+    char* det11;
     if (name11.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
@@ -618,6 +774,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
         det11 = ("%.1f ");
     }
 
+    //choix d'un adjectif + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_adj11;
     p_node pn_adj11;
     do {
@@ -671,12 +828,10 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             }
         }
     } while (pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)][0] == 0);
-
-
     bf_adj11.word = pn_adj11->toto[(int) (name11.Genre + name11.Nombre - 1)];
 
 
-
+    //choix d'un verbe + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_verb11 = ChooseWordBase(verb);
     p_node pn_verb11 = bf_verb11.p;
     do {
@@ -748,14 +903,14 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             no = 0;
         }
     } while (pn_verb11->toto[i][0] == 0);
-
-
     bf_verb11.word = pn_verb11->toto[i];
 
-
+    //choix nom
     t_accords name21 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name21;
     bf_name21.word = name21.word;
+
+    //choix determinant
     char* det21;
 
     if (name21.Nombre == PL) {
@@ -883,12 +1038,13 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 
 
-
+    //choix nom
     t_accords name12 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name12;
     bf_name12.word = name12.word;
     char* det12;
 
+    //choix determinant
     if (name12.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
@@ -1006,6 +1162,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
     }
 
 
+    //choix d'un verbe + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_verb12 = ChooseWordBase(verb);
     p_node pn_verb12 = bf_verb12.p;
     do {
@@ -1082,6 +1239,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
     bf_verb12.word = pn_verb12->toto[i];
 
 
+    //choix d'un verbe + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_verb22 = ChooseWordBase(verb);
     p_node pn_verb22 = bf_verb22.p;
     do {
@@ -1157,12 +1315,13 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
     bf_verb22.word = pn_verb22->toto[i];
 
-
+    //choix nom
     t_accords name22 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name22;
     bf_name22.word = name22.word;
     char* det22;
 
+    //choix determinant
     if (name22.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
@@ -1280,6 +1439,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
     }
 
 
+    //choix d'un adjectif + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_adj12;
     p_node pn_adj12;
     do {
@@ -1333,10 +1493,6 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             }
         }
     } while (pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)][0] == 0);
-
-    if(name12.Genre == Fem){
-        //printf("%.1f;%.1f ",name12.Genre,name12.Nombre);
-    }
     bf_adj12.word = pn_adj12->toto[(int) (name22.Genre + name22.Nombre - 1)];
 
 
@@ -1346,12 +1502,13 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
     //Modèle 3   nom-adjectif-verbe-nom
 
 
-
+    //choix nom
     t_accords name13 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name13;
     bf_name13.word = name13.word;
     char* det13;
 
+    //choix determinant
     if (name13.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
@@ -1469,7 +1626,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
     }
 
 
-
+    //choix d'un adjectif + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_adj13;
     p_node pn_adj13;
     do {
@@ -1530,7 +1687,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 
 
-
+    //choix d'un verbe + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_verb13 = ChooseWordBase(verb);
     p_node pn_verb13 = bf_verb13.p;
     do {
@@ -1607,11 +1764,13 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
     bf_verb13.word = pn_verb13->toto[i];
 
 
+    //choix nom
     t_accords name23 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name23;
     bf_name23.word = name23.word;
     char* det23;
 
+    //choix determinant
     if (name23.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
@@ -1735,7 +1894,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 
 
-
+    //choix pronom
     int vNombre = -1;
     int vPersonne = -1;
     random = rand()%6;
@@ -1772,7 +1931,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
         vPersonne = P3;
     }
 
-
+    //choix d'un verbe + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_verb14 = ChooseWordBase(verb);
     p_node pn_verb14 = bf_verb14.p;
     do {
@@ -1848,12 +2007,14 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
     bf_verb14.word = pn_verb14->toto[i];
 
-
+    //choix nom
     t_accords name14 = ChooseWordFlechie(ChooseWordBase(name));
     t_baseFlechie bf_name14;
     bf_name14.word = name14.word;
     char* det14;
 
+
+    //choix determinant
     if (name14.Nombre == PL) {
         random = rand() % 8;
         if (random == 0) {
@@ -1971,6 +2132,7 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
     }
 
 
+    //choix d'un adjectif + proposition ajout forme fléchies manquantes dans le dictionnaire
     t_baseFlechie bf_adj14;
     p_node pn_adj14;
     do {
@@ -2024,11 +2186,10 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
             }
         }
     } while (pn_adj14->toto[(int) (name14.Genre + name14.Nombre - 1)][0] == 0);
-    if(name14.Genre == Fem){
-        //printf("%.1f;%.1f ",name14.Genre,name14.Nombre);
-    }
     bf_adj14.word = pn_adj14->toto[(int) (name14.Genre + name14.Nombre - 1)];
 
+
+    //affichage des quatres modèles
     printf("\n\nModèle 1 : %s ",det11);
     DisplayWord(bf_name11);
     printf(" | ");
@@ -2080,7 +2241,12 @@ void WriteSentenceFlechie(t_tree name, t_tree adj, t_tree adv, t_tree verb) {
 
 }
 
-/** Fonction permetant de compter toutes les formes fléchies existantes à partir d'une node. Fonction appelée dans AutoCompletion(), rechercheNiemeFlechie(), PrintFlechies()*/
+/** Fonction permetant de compter toutes les formes fléchies existantes à partir d'une node.
+ * Fonction appelée dans AutoCompletion(), rechercheNiemeFlechie(), PrintFlechies()
+ * @param pn
+ * @param row
+ * @return le nombre de formes fléchies
+ */
 int Count_flechies(p_node pn, int row){
     if(pn == NULL){
         return 0;
@@ -2097,7 +2263,12 @@ int Count_flechies(p_node pn, int row){
     }
 }
 
-/** Fonction permetant de d'afficher toutes les formes fléchies existantes à partir d'une node. Fonction appelée dans AutoCompletion()*/
+/** Fonction permetant de d'afficher toutes les formes fléchies existantes à partir d'une node.
+ * Fonction appelée dans AutoCompletion()
+ * @param pn
+ * @param row
+ * @param cpt
+ */
 void PrintFlechies(p_node pn, int row, int cpt){
     if(pn != NULL) {
         if (pn->toto != NULL) {
@@ -2119,10 +2290,19 @@ void PrintFlechies(p_node pn, int row, int cpt){
     }
 }
 
-/** Fonction permetant de retourner la n-ième forme fléchie à partir d'une node. Fonction appelée dans AutoCompletion()*/
+/** Fonction permetant de retourner la n-ième forme fléchie à partir d'une node.
+ *  Fonction appelée dans AutoCompletion()
+ * @param pn
+ * @param row
+ * @param n
+ * @return la forme fléchie voulue
+ */
 char* rechercheNiemeFlechie(p_node pn, int row, int n) {
     if (pn != NULL) {
         char* word = calloc(50, sizeof(char));
+        if(word == NULL){
+            exit(EXIT_FAILURE);
+        }
         if (pn->toto != NULL) {
             int j = 0;
             for (int i = 0; i < row; ++i) {
@@ -2153,11 +2333,17 @@ char* rechercheNiemeFlechie(p_node pn, int row, int n) {
     }else{
         return NULL;
     }
-}
+}               //A finir :'(
 
-/** Fonction permetant de rechercher un mot rentrée par l'utilisateur à l'aide de la completion automatique.*/
-t_baseFlechie AutoCompletion(t_tree NOM,t_tree VER,t_tree ADJ,t_tree ADV){
-    char* nature = calloc(15,sizeof(char));
+/** Fonction permetant de rechercher un mot rentrée par l'utilisateur à l'aide de la completion automatique.
+ * @param NOM
+ * @param VER
+ * @param ADJ
+ * @param ADV
+ * @return le mot choisi par l'utilisateur
+ */
+t_baseFlechie AutoCompletion(t_tree NOM,t_tree VER,t_tree ADJ,t_tree ADV, char* nature){
+
     t_tree ActualTree;
     int row;
     t_baseFlechie bf;
@@ -2165,19 +2351,7 @@ t_baseFlechie AutoCompletion(t_tree NOM,t_tree VER,t_tree ADJ,t_tree ADV){
     bf.p = NULL;
 
 
-    printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names\n");
-    fgets(nature,14, stdin);
-
-    while(Verif_character(nature) == 0){
-        printf("Wrong input");
-        printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names\n");
-        fgets(nature,14, stdin);
-    }
-    while(Verif_Genre(nature) != 0){
-        printf("Wrong input");
-        printf("Quel est la nature de votre mot ? adjectives/adverbs/verbs/names\n");
-        fgets(nature,14, stdin);
-    }
+    //determiner dans quel abre on va chercher
 
     if (strcmp(nature,"names\n") == 0){
         ActualTree = NOM;
@@ -2207,7 +2381,7 @@ t_baseFlechie AutoCompletion(t_tree NOM,t_tree VER,t_tree ADJ,t_tree ADV){
 
 
     printf("Rentrez les lettres de votre mot une par une.\n");
-    while(Count_flechies(pn,row) > 10) {
+    while(Count_flechies(pn,row) > 10) {            //saisie des lettres une par une, jusqua Count_flechies < 10
         word[i] = fgetc(stdin);
         useless = fgetc(stdin);
 
@@ -2241,76 +2415,86 @@ t_baseFlechie AutoCompletion(t_tree NOM,t_tree VER,t_tree ADJ,t_tree ADV){
 
 
     char* chosenword = rechercheNiemeFlechie(pn, row, n);
+    strcat(chosenword, "\n");
     bf.word = chosenword;
     bf.p = pn;
     return bf;
     free(nature);
 
 
-}
+}           //A finir :'(
 
+/** Search for the correct file to open and assign the number of rows of the fléchies forms depending on the file opened.
+ * This function is called in Affichage
+ * @param t the correct tree corresponding to the correct categorie.
+ * @param mot wor given by the user
+ * @return calls the function verif_kids which will return the p_node of the word found.
+ */
 p_node recherche(t_tree t,char* mot,char* filename){
     p_node s=t.root;
     s=s->kid;
     int row=0;
-    if (strcmp(filename, "adverbs") == 0){
+    if (strcmp(filename,"adverbs")== 0){
         row=1;
     }
-    if (strcmp(filename, "verbs") == 0){
+    if (strcmp(filename,"verbs")== 0){
         row=19;
-    }
-    if(strcmp(filename, "names") == 0){
+    }   if(strcmp(filename,"names")== 0){
         row=9;
     }
-    if(strcmp(filename, "adjectives") == 0){  // adjectives
+    if(strcmp(filename,"adjectives")== 0){
         row=10;
     }
     return verif_kid(s,row,mot);
 
 }
 
-p_node verif_kid(p_node pn,int row, char* mot){
-    p_node tmp;
-    int k;
+/** Allows to find the word in our tree.
+ * The function is called in recherche.
+ * @param pn = the root the first time we call the function.
+ * @param row the number of words in the fléchies forms.
+ * @return the p_node of the word/ Null if there isn't the word in the tree.
+ */
+p_node verif_kid(p_node pn, int row, char* mot){
     if (pn!=NULL) {
+        p_node tmp = NULL;
         if (pn->toto != NULL) {
             for (int i = 0; i < row; i++) {
                 int j = 0;
-                for (j = 0; j < strlen(mot); ++j) {
-                    if(mot[j] == pn->toto[i][j]) {
-                        tmp = pn;
+                while (pn->toto[i][j] != 0){
+                    if (mot[j] == pn->toto[i][j]){
+                        if(pn->toto[i][j+1] == 0 && mot[j+1] == '\n'){
+                            tmp = pn;       //Then we return the node where the fléchies form are stocked
+                        }
                     }else{
                         break;
                     }
+                    j++;
                 }
-                if (j == strlen(mot)){
-                    k = 1;
-                }
-            }
-            if(k == 1){
-                return tmp;
             }
         }
-
-        p_node tmp= verif_kid(pn->kid,row,mot);
-        p_node tmp1=verif_kid(pn->siblings,row,mot);
-        if (tmp!=NULL){
+        if(tmp != NULL){
             return tmp;
         }
-        else{
-            return tmp1;
+        p_node tmp1 = verif_kid(pn->kid,row,mot); //We will search the word passing by the kid
+        p_node tmp2 = verif_kid(pn->siblings,row,mot); //We will search the word passing by the siblings
+        if (tmp1!=NULL){
+            return tmp1;        //We return the node because we found the word
         }
-
-        return tmp;
-
+        else{
+            return tmp2;        //We return the node because we found the word
+        }
     }
     else{
-        return NULL;
+        return NULL; //The word is not contained in the tree
     }
 
 }
 
-/** Fonction permetant de compter le nombre de siblings d'une node*/
+/** Fonction permetant de compter le nombre de siblings d'une node
+ * @param p
+ * @return le nombre de siblings
+ */
 int CountSiblings(p_node p){
     int cpt = 0;
     p_node tmp = p;
@@ -2321,7 +2505,9 @@ int CountSiblings(p_node p){
     return cpt;
 }
 
-/** Fonction permetant d'aficher un mot*/
+/** Fonction permetant d'aficher un mot
+ * @param bf
+ */
 void DisplayWord(t_baseFlechie bf){
     int i = 0;
     if(bf.word != NULL) {
@@ -2329,19 +2515,26 @@ void DisplayWord(t_baseFlechie bf){
             printf("%c", bf.word[i]);
             i++;
         }
-    }else{
-        //printf("ATTENTION tentative de print un NULL");
     }
 }
 
-/** Fonction permetant d'initialiser un arbre ayant une node contenant 'a' comme racine */
+/** Fonction permetant d'initialiser un arbre ayant une node contenant 'a' comme racine
+ * @param a
+ * @return arbre
+ */
 t_tree createTree(char a){
     t_tree nouv;
     nouv.root = createNode(a);
     return nouv;
 }
 
-/** Fonction permetant d'inserer les formes fléchies dans un arbre. Fonction appelée par createTree_any()*/
+/** Fonction permetant d'inserer les formes fléchies dans un arbre.
+ * Fonction appelée par createTree_any()
+ * @param pn
+ * @param filename
+ * @param StartPosition
+ * @param ActualPosition
+ */
 void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosition){
     FILE* file;
     int Card = 0;
@@ -2362,9 +2555,14 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         if(pn->toto == NULL){
             // initialisation d'un tableau de 9 char*
             pn->toto = (char**)malloc(9*sizeof(char*));
+            if(pn->toto == NULL){
+                exit(EXIT_FAILURE);
+            }
             for (int j = 0; j < 9; ++j) {
-                //pn->toto[j] = (char*)malloc(100*sizeof(char));
                 pn->toto[j] = (char*)calloc(100,sizeof(char));
+                if(pn->toto[j] == NULL){
+                    exit(EXIT_FAILURE);
+                }
             }
         }
         int k;
@@ -2373,6 +2571,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
 
         } while (ActualChar != ':');
 
+        //attribution du genre
         ActualChar = fgetc(file);
         if(ActualChar == 'M'){
             Genre = Mas;
@@ -2391,7 +2590,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         } while (ActualChar != '+');
 
 
-
+        //attribution du nombre
         ActualChar = fgetc(file);
         if(ActualChar == 'S'){
             Nombre = SG;
@@ -2412,13 +2611,13 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         do {
             ActualChar = fgetc(file);
             name[i] = ActualChar;
-            //printf("%c",name[i]);
             i++;
         } while (name[i-1] != '\t');
         i = 0;
+
+        //stockage du mot dans la bonne case du tableau toto
         while(name[i] != '\t'){
             pn->toto[(int)(Genre + Nombre-1)][i] = name[i];
-            //char b = pn->toto[(int)(Genre + Nombre)][i];
             i++;
         }
     }
@@ -2428,9 +2627,14 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         if(pn->toto == NULL){
             // initialisation d'un tableau de 10 char*
             pn->toto = (char**)malloc(10*sizeof(char*));
+            if(pn->toto == NULL){
+                exit(EXIT_FAILURE);
+            }
             for (int j = 0; j < 10; ++j) {
-                //pn->toto[j] = (char*)malloc(100*sizeof(char));
                 pn->toto[j] = (char*)calloc(100,sizeof(char));
+                if(pn->toto[j] == NULL){
+                    exit(EXIT_FAILURE);
+                }
             }
 
         }
@@ -2439,6 +2643,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             ActualChar = fgetc(file); // On lit le caractère
         } while (ActualChar != ':');
 
+        //attribution genre
         ActualChar = fgetc(file);
         if(ActualChar == 'M'){
             Genre = Mas;
@@ -2457,7 +2662,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         } while (ActualChar != '+');
 
 
-
+        //attribution nombre
         ActualChar = fgetc(file);
         if(ActualChar == 'S'){
             Nombre = SG;
@@ -2465,10 +2670,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             Nombre = PL;
         }else if(ActualChar == 'I'){
             Nombre = InvPL;
-        }/*else {
-            int d = ftell(file);
-            printf("N%d\n", d);
-        }*/
+        }
 
         fseek(file, StartPosition, SEEK_SET);
 
@@ -2479,6 +2681,8 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             i++;
         } while (name[i-1] != '\t');
         i = 0;
+
+        //stockage dans la bonne case du tableau
         while(name[i] != '\t'){
             if(Card == 1){
                 pn->toto[9][i] = name[i];
@@ -2497,9 +2701,14 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         if (pn->toto == NULL) {
             // initialisation d'un tableau de 10 char*
             pn->toto = (char **) malloc(19 * sizeof(char *));
+            if(pn->toto == NULL){
+                exit(EXIT_FAILURE);
+            }
             for (int j = 0; j < 19; ++j) {
-                //pn->toto[j] = (char*)malloc(100*sizeof(char));
                 pn->toto[j] = (char *) calloc(100, sizeof(char));
+                if(pn->toto[j] == NULL){
+                    exit(EXIT_FAILURE);
+                }
             }
 
         }
@@ -2508,7 +2717,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         } while (ActualChar != ':');
 
         while(ActualChar != EOF && ActualChar != '\n') {
-
+            //attribution temps
             ActualChar = fgetc(file);
             if (ActualChar == 'I') {
                 ActualChar = fgetc(file);
@@ -2531,7 +2740,14 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
                     if (ActualChar == 'm') {
                         ActualChar = fgetc(file);
                         if (ActualChar == 'p') {
-                            Temps = IImp;
+                            ActualChar = fgetc(file);
+                            if(ActualChar != 'r'){
+                                Temps = IImp;
+                                fseek(file, -1, SEEK_CUR);
+                            }else {
+                                int d = ftell(file);
+                                //printf("Temps IIm%d\n", d);
+                            }
                         } else {
                             int d = ftell(file);
                             //printf("Temps IIm%d\n", d);
@@ -2583,7 +2799,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
 
                 }while (ActualChar != '+');
 
-
+                //attribution nombre
                 ActualChar = fgetc(file);
                 if (ActualChar == 'S') {
                     vNombre = vSG;
@@ -2599,6 +2815,8 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
 
                 }while (ActualChar != '+');
 
+
+                //attribution personne
                 ActualChar = fgetc(file);
                 ActualChar = fgetc(file);
                 if (ActualChar == '1') {
@@ -2625,7 +2843,7 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
             } while (name[i - 1] != '\t');
 
 
-
+            //stockage dans la bonne case du tableau
             i = 0;
             while (name[i] != '\t') {
                 if (Inf == 1) {
@@ -2637,9 +2855,6 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
                 }
                 i++;
             }
-
-
-
             fseek(file, last, SEEK_SET);
             ActualChar = fgetc(file);
         }
@@ -2651,10 +2866,18 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
         if (pn->toto == NULL) {
             // initialisation d'un tableau de 10 char*
             pn->toto = (char **) malloc(sizeof(char *));
+            if(pn->toto == NULL){
+                exit(EXIT_FAILURE);
+            }
             pn->toto[0] = (char *) calloc(100, sizeof(char));
+            if(pn->toto[0] == NULL){
+                exit(EXIT_FAILURE);
+            }
         }
         fseek(file,StartPosition, SEEK_SET);
 
+
+        //stockage dans la bonne case du tableau
         do {
             ActualChar = fgetc(file);
             name[i] = ActualChar;
@@ -2671,7 +2894,11 @@ void insertFlechies(p_node pn, char* filename, int StartPosition, int ActualPosi
     fclose(file);
 }
 
-/** Fonction permetant de créer un abre a partir d'un fichier */
+/** Fonction permetant de créer un abre a partir d'un fichier
+ * @param t
+ * @param filename
+ * @return arbre rempli
+ */
 t_tree createTree_any(t_tree t, char* filename){
     p_node pn = t.root;
     FILE* file;
@@ -2768,30 +2995,42 @@ t_tree createTree_any(t_tree t, char* filename){
         //printf("Impossible d'ouvrir le dico %c.txt",&filename);
         return t;
     }
-}
+}               //COMMENTAIRE A FAIRE
 
-/** Fonction permetant de créer les différents fichiers(names, adjectives, adverbs et verbs) à partir du fichier dictionnaire */
+
+
+
+
+
+/** Fonction permetant de créer les différents fichiers (names, adjectives, adverbs et verbs) à partir du fichier dictionnaire*/
 void createFiles(){
+
+    // Ouverture du ficher dictionnaire.txt en mode lecture uniquement (r)
     FILE* dico = fopen("dictionnaire.txt", "r");
+
+    // Ouverture des quatres autres fichiers (ou création si ils n'existent pas) en mode lecture et écriture avec suppression du contenu au préalable (w+)
     FILE* names = fopen("names.txt", "w+");
     FILE* verbs = fopen("verbs.txt", "w+");
     FILE* adverbs = fopen("adverbs.txt", "w+");
     FILE* adjectives = fopen("adjectives.txt", "w+");
 
-    char ligne[1000];
+    char ligne[500];
     char ActualChar;
     char a, b;
-    if (dico != NULL && names != NULL && verbs != NULL && adverbs != NULL && adjectives != NULL) {
-        while(fgetc(dico) != EOF){
+    if (dico != NULL && names != NULL && verbs != NULL && adverbs != NULL && adjectives != NULL) { //verification de l'ouverture des fichiers
+        while(fgetc(dico) != EOF){      //verification de fin de fichier
             fseek(dico,-1, SEEK_CUR);
-            // Boucle de lecture des caractères un à un
+
             int pos = ftell(dico);
             for (int i = 0; i < 2; ++i) {
+                // Boucle de lecture des caractères un à un
                 do {
                     ActualChar = fgetc(dico); // On lit le caractère
                 } while (ActualChar != '\t');
             }
             a = fgetc(dico);
+
+            // check si NOM, VER, ADV ou ADJ et écrit la ligne dans le bon fichier
             if (a == 'N') {
                 fseek(dico, pos, SEEK_SET);
                 fgets(ligne, 1000, dico);
@@ -2833,18 +3072,18 @@ void createFiles(){
                         fputc('\n', adjectives);
                     }
                     else{
-                        fgets(ligne, 1000, dico);
+                        fgets(ligne, 500, dico);       // va à la ligne d'après
                     }
                 }
                 else{
-                    fgets(ligne, 1000, dico);
+                    fgets(ligne, 500, dico);
                 }
             }
             else{
-                fgets(ligne, 1000, dico);
+                fgets(ligne, 500, dico);
             }
         }
-        fclose(dico);
+        fclose(dico);           // ferme tout les fichiers
         fclose(names);
         fclose(verbs);
         fclose(adverbs);
@@ -2856,7 +3095,10 @@ void createFiles(){
     }
 }
 
-/** Fonction permetant de free les arbres crées par createTree() */
+/** Fonction permetant de free les arbres crées par createTree()
+ * @param pn
+ * @param row
+ */
 void freeTree(p_node pn, int row){
     if(pn != NULL){
         if(pn->kid == NULL && pn->siblings == NULL){
